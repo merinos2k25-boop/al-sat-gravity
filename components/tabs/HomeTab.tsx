@@ -5,7 +5,7 @@ import { useApp } from '@/components/providers/AppProvider';
 import ProductCard from '@/components/ui/ProductCard';
 import ProductForm from '@/components/ui/ProductForm';
 import { formatCurrency } from '@/lib/utils';
-import { TrendingUp, Package, DollarSign, Plus, Search, X } from 'lucide-react';
+import { TrendingUp, Package, DollarSign, Plus, Search, X, Wallet } from 'lucide-react';
 
 export default function HomeTab() {
   const { products, summary } = useApp();
@@ -26,9 +26,15 @@ export default function HomeTab() {
       {showForm && <ProductForm onClose={() => setShowForm(false)} defaultType={formType} />}
 
       {/* Header */}
-      <div>
-        <h1 className="text-xl font-bold">📊 Ticaret Takip</h1>
-        <p className="text-white/50 text-xs mt-0.5">Alış ve satışlarını yönet</p>
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
+          style={{ background: 'linear-gradient(135deg, hsl(var(--primary-hsl)), hsl(var(--primary-hsl) / 0.6))' }}>
+          <Wallet size={20} className="text-white" />
+        </div>
+        <div>
+          <h1 className="text-xl font-bold">Ticaret Takip</h1>
+          <p className="text-white/50 text-xs">Alış ve satışlarını yönet</p>
+        </div>
       </div>
 
       {/* Stats row */}

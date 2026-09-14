@@ -1,21 +1,29 @@
 @import "tailwindcss";
 
+/* ===== Tailwind v4 dynamic theme ===== */
+@theme inline {
+  --color-primary: hsl(var(--primary-hsl, 221 83% 53%));
+  --color-background: var(--bg-background, #0f1117);
+  --color-surface: var(--bg-surface, #1a1d27);
+  --color-foreground: var(--text-foreground, #f1f5f9);
+}
+
 /* ===== CSS Variables ===== */
 :root {
-  --color-primary: 221 83% 53%; /* blue */
+  --primary-hsl: 221 83% 53%; /* blue default */
   --font-family: var(--font-inter), 'Helvetica Neue', sans-serif;
 }
 
 /* ===== Dark Mode (default) ===== */
 .dark {
   --bg-background: #0f1117;
-  --bg-surface: #1a1d27;
+  --bg-surface: #1e2235;
   --text-foreground: #f1f5f9;
 }
 
 /* ===== Light Mode ===== */
 :root:not(.dark) {
-  --bg-background: #f8fafc;
+  --bg-background: #f1f5fb;
   --bg-surface: #ffffff;
   --text-foreground: #0f172a;
 }
@@ -33,9 +41,9 @@ body {
   overscroll-behavior: none;
 }
 
-/* ===== Safe area for bottom nav ===== */
+/* ===== Safe area for bottom nav — capped to avoid excessive spacing ===== */
 .safe-area-bottom {
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-bottom: max(env(safe-area-inset-bottom, 4px), 4px);
 }
 
 /* ===== Scrollbar (minimal) ===== */
@@ -53,26 +61,31 @@ body {
 
 /* ===== Selection ===== */
 ::selection {
-  background: hsl(var(--color-primary) / 0.3);
+  background: hsl(var(--primary-hsl) / 0.3);
 }
 
-/* ===== Input styling for dark ===== */
+/* ===== Input date picker ===== */
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(0.6);
   cursor: pointer;
 }
-
 :root:not(.dark) input[type="date"]::-webkit-calendar-picker-indicator {
   filter: none;
 }
 
-/* ===== Light mode text fixes ===== */
-:root:not(.dark) .text-white\/80 { color: rgba(15,23,42,0.8) !important; }
-:root:not(.dark) .text-white\/60 { color: rgba(15,23,42,0.6) !important; }
-:root:not(.dark) .text-white\/50 { color: rgba(15,23,42,0.5) !important; }
-:root:not(.dark) .text-white\/40 { color: rgba(15,23,42,0.4) !important; }
-:root:not(.dark) .text-white\/30 { color: rgba(15,23,42,0.3) !important; }
-:root:not(.dark) .bg-white\/5 { background-color: rgba(0,0,0,0.04) !important; }
-:root:not(.dark) .bg-white\/10 { background-color: rgba(0,0,0,0.07) !important; }
-:root:not(.dark) .border-white\/10 { border-color: rgba(0,0,0,0.1) !important; }
-:root:not(.dark) .border-white\/30 { border-color: rgba(0,0,0,0.2) !important; }
+/* ===== Light mode overrides ===== */
+:root:not(.dark) .text-white\/80 { color: rgba(15,23,42,0.85) !important; }
+:root:not(.dark) .text-white\/70 { color: rgba(15,23,42,0.75) !important; }
+:root:not(.dark) .text-white\/60 { color: rgba(15,23,42,0.65) !important; }
+:root:not(.dark) .text-white\/50 { color: rgba(15,23,42,0.55) !important; }
+:root:not(.dark) .text-white\/40 { color: rgba(15,23,42,0.45) !important; }
+:root:not(.dark) .text-white\/30 { color: rgba(15,23,42,0.35) !important; }
+:root:not(.dark) .bg-white\/5  { background-color: rgba(0,0,0,0.05) !important; }
+:root:not(.dark) .bg-white\/10 { background-color: rgba(0,0,0,0.08) !important; }
+:root:not(.dark) .border-white\/10 { border-color: rgba(0,0,0,0.12) !important; }
+:root:not(.dark) .border-white\/30 { border-color: rgba(0,0,0,0.22) !important; }
+
+/* ===== Light mode modal ===== */
+:root:not(.dark) .modal-bg {
+  background-color: #ffffff !important;
+}

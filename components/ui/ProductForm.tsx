@@ -74,7 +74,7 @@ export default function ProductForm({ onClose, editProduct, defaultType = 'purch
   };
 
   const inputCls =
-    'w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/60 placeholder:text-white/30';
+    'w-full rounded-xl bg-white/10 border border-white/20 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/60 placeholder:text-white/40';
   const labelCls = 'block text-xs font-medium text-white/60 mb-1';
   const errCls = 'text-red-400 text-xs mt-1';
 
@@ -84,7 +84,7 @@ export default function ProductForm({ onClose, editProduct, defaultType = 'purch
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative w-full sm:max-w-lg bg-surface rounded-t-3xl sm:rounded-2xl shadow-2xl max-h-[92vh] flex flex-col overflow-hidden">
+      <div className="relative w-full sm:max-w-lg bg-[#1e2235] dark:bg-[#1e2235] light:bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl max-h-[92vh] flex flex-col overflow-hidden" style={{ backgroundColor: 'var(--bg-surface)' }}>
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
           <div className="flex items-center gap-2">

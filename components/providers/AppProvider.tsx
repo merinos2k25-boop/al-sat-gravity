@@ -52,7 +52,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       orange: '25 95% 53%',
       rose: '347 89% 60%',
     };
-    root.style.setProperty('--color-primary', colorMap[settings.colorTheme] ?? colorMap.blue);
+    root.style.setProperty('--primary-hsl', colorMap[settings.colorTheme] ?? colorMap.blue);
 
     const fontMap: Record<string, string> = {
       default: "'Inter', 'Helvetica Neue', sans-serif",

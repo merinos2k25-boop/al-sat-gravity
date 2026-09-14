@@ -20,7 +20,7 @@ const tabs = [
 
 export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-surface/90 backdrop-blur-xl border-t border-white/10 safe-area-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-surface/90 backdrop-blur-xl border-t border-white/10 pb-1">
       <div className="flex max-w-lg mx-auto">
         {tabs.map(({ id, label, icon: Icon }) => {
           const active = activeTab === id;
