@@ -85,10 +85,13 @@ export function calculateSummary(products: Product[]): Summary {
     (p) => (p.salePrice ?? 0) - p.purchasePrice - p.expenses <= 0
   ).length;
 
+  const inStockValue = inStock.reduce((sum, p) => sum + p.purchasePrice + p.expenses, 0);
+
   return {
     totalPurchases: products.length,
     totalSales: sold.length,
     inStock: inStock.length,
+    inStockValue,
     totalPurchaseAmount,
     totalSaleAmount,
     totalExpenses,
@@ -185,6 +188,7 @@ export function exportExcel(): void {
     { 'Gösterge': 'Toplam Kayıtlı Ürün', 'Değer': `${summary.totalPurchases} adet` },
     { 'Gösterge': 'Toplam Yapılan Satış', 'Değer': `${summary.totalSales} adet` },
     { 'Gösterge': 'Stokta Kalan Ürün', 'Değer': `${summary.inStock} adet` },
+    { 'Gösterge': 'Stoktaki Ürünlerin Değeri', 'Değer': `${summary.inStockValue.toLocaleString('tr-TR')} ₺` },
     { 'Gösterge': 'Toplam Alış Tutarı', 'Değer': `${summary.totalPurchaseAmount.toLocaleString('tr-TR')} ₺` },
     { 'Gösterge': 'Toplam Satış Hasılatı', 'Değer': `${summary.totalSaleAmount.toLocaleString('tr-TR')} ₺` },
     { 'Gösterge': 'Toplam Masraflar', 'Değer': `${summary.totalExpenses.toLocaleString('tr-TR')} ₺` },

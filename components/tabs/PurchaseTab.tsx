@@ -54,15 +54,13 @@ export default function PurchaseTab() {
   }, [products, search, filterCategory, sort]);
 
   return (
-    <div className="px-4 pt-4 pb-32 space-y-4 relative min-h-screen">
+    <div className="px-4 pt-6 pb-32 space-y-4 relative min-h-screen">
       {showForm && <ProductForm onClose={() => setShowForm(false)} defaultType="purchase" />}
 
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold">🛒 Alışlar</h1>
-          <p className="text-white/50 text-xs mt-0.5">{purchases.length} kayıt</p>
-        </div>
+      <div className="pt-2">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">🛒 Alışlar</h1>
+        <p className="text-white/50 text-xs mt-1">{purchases.length} kayıtlı ürün</p>
       </div>
 
       {/* Search */}

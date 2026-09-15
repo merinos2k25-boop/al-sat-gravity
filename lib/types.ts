@@ -58,6 +58,7 @@ export interface Summary {
   totalPurchases: number;
   totalSales: number;
   inStock: number;
+  inStockValue: number;
   totalPurchaseAmount: number;
   totalSaleAmount: number;
   totalExpenses: number;

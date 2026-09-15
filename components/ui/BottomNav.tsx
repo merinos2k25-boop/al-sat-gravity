@@ -28,6 +28,7 @@ const tabs: TabItem[] = [
 export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
   const { settings } = useApp();
   const isWhiteTheme = settings.colorTheme === 'white';
+  const isLight = settings.theme === 'light';
   const activeIndex = tabs.findIndex((t) => t.id === activeTab);
   const navRef = useRef<HTMLElement>(null);
   const isDraggingRef = useRef(false);
@@ -84,6 +85,43 @@ export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
     }
   };
 
+  // Kapsül arka planı ve ışıması
+  const getCapsuleStyle = () => {
+    if (isWhiteTheme) {
+      return isLight
+        ? {
+            backgroundColor: 'rgba(0, 0, 0, 0.09)',
+            borderColor: 'rgba(0, 0, 0, 0.18)',
+            boxShadow: '0 4px 15px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.8)',
+          }
+        : {
+            backgroundColor: 'rgba(255, 255, 255, 0.25)',
+            borderColor: 'rgba(255, 255, 255, 0.7)',
+            boxShadow: '0 0 25px rgba(255, 255, 255, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.6)',
+          };
+    }
+
+    return isLight
+      ? {
+          backgroundColor: 'hsl(var(--primary-hsl) / 0.16)',
+          borderColor: 'hsl(var(--primary-hsl) / 0.45)',
+          boxShadow: '0 4px 16px hsl(var(--primary-hsl) / 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.9)',
+        }
+      : {
+          backgroundColor: 'hsl(var(--primary-hsl) / 0.22)',
+          borderColor: 'hsl(var(--primary-hsl) / 0.55)',
+          boxShadow: '0 0 22px hsl(var(--primary-hsl) / 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.35)',
+        };
+  };
+
+  // Aktif ikon rengi
+  const getActiveIconColor = () => {
+    if (isWhiteTheme) {
+      return isLight ? '#0f172a' : '#ffffff';
+    }
+    return 'hsl(var(--primary-hsl))';
+  };
+
   return (
     <div
       className="fixed bottom-6 left-0 right-0 z-40 flex justify-center px-4 pointer-events-none"
@@ -97,19 +135,15 @@ export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
-        className="pointer-events-auto relative w-full max-w-sm h-16 rounded-full px-1.5 py-1 flex items-center bg-black/80 dark:bg-[#0c0e14]/85 backdrop-blur-2xl border border-white/20 select-none cursor-pointer touch-none shadow-[0_20px_45px_-10px_rgba(0,0,0,0.7),inset_0_1px_1px_0_rgba(255,255,255,0.28)]"
+        className="pointer-events-auto relative w-full max-w-sm h-16 rounded-full px-1.5 py-1 flex items-center bg-white/85 dark:bg-[#0c0e14]/85 backdrop-blur-2xl border border-black/10 dark:border-white/20 select-none cursor-pointer touch-none shadow-[0_15px_35px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_45px_-10px_rgba(0,0,0,0.7),inset_0_1px_1px_0_rgba(255,255,255,0.28)]"
       >
-        {/* Sekmeler Arasında Pürüzsüzce Kayan iOS 26 Glass Kapsül Hapı (Seçili Tema Renginde Parlar) */}
+        {/* Sekmeler Arasında Pürüzsüzce Kayan iOS 26 Glass Kapsül Hapı */}
         <div
           className="absolute top-1.5 bottom-1.5 rounded-full backdrop-blur-xl border transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none"
           style={{
             width: `calc((100% - 12px) / ${tabs.length})`,
             transform: `translate3d(calc(${activeIndex} * 100%), 0, 0)`,
-            backgroundColor: isWhiteTheme ? 'rgba(255, 255, 255, 0.25)' : 'hsl(var(--primary-hsl) / 0.22)',
-            borderColor: isWhiteTheme ? 'rgba(255, 255, 255, 0.7)' : 'hsl(var(--primary-hsl) / 0.55)',
-            boxShadow: isWhiteTheme
-              ? '0 0 25px rgba(255, 255, 255, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.6)'
-              : '0 0 22px hsl(var(--primary-hsl) / 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.35)',
+            ...getCapsuleStyle(),
           }}
         />
 
@@ -134,15 +168,17 @@ export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
                   style={
                     active
                       ? {
-                          color: isWhiteTheme ? '#ffffff' : 'hsl(var(--primary-hsl))',
-                          filter: isWhiteTheme
-                            ? 'drop-shadow(0 0 10px rgba(255, 255, 255, 0.95))'
+                          color: getActiveIconColor(),
+                          filter: isLight
+                            ? 'drop-shadow(0 2px 5px rgba(0,0,0,0.15))'
                             : 'drop-shadow(0 0 8px hsl(var(--primary-hsl) / 0.9))',
                         }
                       : undefined
                   }
                   className={`transition-all duration-300 ${
-                    active ? 'scale-115' : 'text-white/60 group-hover:text-white/90'
+                    active
+                      ? 'scale-115 font-bold'
+                      : 'text-slate-400 group-hover:text-slate-700 dark:text-white/50 dark:group-hover:text-white/80'
                   }`}
                 />
               </div>

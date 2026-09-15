@@ -117,18 +117,18 @@ export default function HomeTab() {
   const allOpen = CATEGORY_CONFIGS.every((c) => openCategories[c.id]);
 
   return (
-    <div className="px-4 pt-4 pb-32 space-y-4">
+    <div className="px-4 pt-6 pb-32 space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 pt-2">
         <div
-          className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-md"
+          className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-md"
           style={{ background: 'linear-gradient(135deg, hsl(var(--primary-hsl)), hsl(var(--primary-hsl) / 0.6))' }}
         >
-          <Wallet size={20} className="text-white" />
+          <Wallet size={22} className="text-white" />
         </div>
         <div>
-          <h1 className="text-xl font-bold">Ticaret Takip</h1>
-          <p className="text-white/50 text-xs">Alış ve satışlarını yönet</p>
+          <h1 className="text-2xl font-extrabold tracking-tight">Ticaret Takip</h1>
+          <p className="text-white/50 text-xs mt-0.5">Alış ve satışlarını yönet</p>
         </div>
       </div>
 
@@ -240,7 +240,7 @@ export default function HomeTab() {
                 <div className="flex items-center gap-2.5">
                   <span className="text-xl shrink-0">{cat.icon}</span>
                   <div>
-                    <h2 className="font-semibold text-sm leading-tight">{cat.label}</h2>
+                    <h2 className="font-bold text-base leading-tight">{cat.label}</h2>
                     <p className="text-[11px] text-white/50 mt-0.5">
                       {catProducts.length === 0 ? (
                         'Ürün yok'
