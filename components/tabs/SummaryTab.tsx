@@ -57,19 +57,19 @@ export default function SummaryTab() {
       </div>
 
       {/* Stoktaki Ürünlerin Toplam Tutarı Özel Banner */}
-      <div className="bg-gradient-to-r from-purple-500/15 via-indigo-500/10 to-transparent border border-purple-500/25 rounded-2xl p-4 flex items-center justify-between">
+      <div className="bg-gradient-to-r from-red-500/15 via-rose-500/10 to-transparent border border-red-500/25 rounded-2xl p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-purple-500/20 text-purple-400">
+          <div className="p-2.5 rounded-xl bg-red-500/20 text-red-400">
             <Coins size={22} />
           </div>
           <div>
             <p className="text-xs text-white/60 font-medium">Stoktaki Ürünlerin Toplam Tutarı</p>
-            <p className="text-xl font-extrabold text-purple-300 mt-0.5">
+            <p className="text-xl font-extrabold text-red-400 mt-0.5">
               {formatCurrency(summary.inStockValue)}
             </p>
           </div>
         </div>
-        <span className="text-xs px-2.5 py-1 rounded-lg bg-purple-500/20 text-purple-300 font-semibold">
+        <span className="text-xs px-2.5 py-1 rounded-lg bg-red-500/20 text-red-400 font-semibold">
           {summary.inStock} Ürün
         </span>
       </div>

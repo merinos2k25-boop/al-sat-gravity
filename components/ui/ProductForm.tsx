@@ -20,8 +20,12 @@ interface ProductFormProps {
 }
 
 export default function ProductForm({ onClose, editProduct, defaultType = 'purchase' }: ProductFormProps) {
-  const { addProduct, updateProduct } = useApp();
+  const { addProduct, updateProduct, settings } = useApp();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const isWhiteTheme = settings.colorTheme === 'white';
+  const isLight = settings.theme === 'light';
+  // Koyu mod + beyaz tema → kaydet butonu siyah/koyu (zıt renk)
+  const isDarkWhite = isWhiteTheme && !isLight;
 
   const [form, setForm] = useState<Partial<Product>>({
     id: editProduct?.id ?? generateId(),
@@ -438,7 +442,10 @@ export default function ProductForm({ onClose, editProduct, defaultType = 'purch
             type="submit"
             form="product-form"
             onClick={handleSubmit}
-            className="flex-1 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:opacity-90 transition flex items-center justify-center gap-2"
+            className={`flex-1 py-3 rounded-xl text-sm font-semibold hover:opacity-90 transition flex items-center justify-center gap-2 ${
+              isDarkWhite ? '' : 'bg-primary text-white'
+            }`}
+            style={isDarkWhite ? { backgroundColor: '#f1f5f9', color: '#0f172a' } : undefined}
           >
             <Save size={16} />
             {editProduct ? 'Güncelle' : 'Kaydet'}
