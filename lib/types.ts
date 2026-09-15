@@ -38,6 +38,7 @@ export interface Product {
   purchaseDate: string;
   saleDate?: string;
   notes?: string;
+  image?: string;
 }
 
 export interface AppSettings {

@@ -46,18 +46,28 @@ export default function ProductCard({ product }: ProductCardProps) {
     <>
       {editing && <ProductForm onClose={() => setEditing(false)} editProduct={product} />}
 
-      <div className={`rounded-2xl border overflow-hidden transition-all ${
-        product.status === 'Satıldı'
-          ? 'border-green-500/20 bg-green-500/5'
-          : 'border-white/10 bg-white/5'
-      }`}>
+      <div
+        className={`rounded-2xl border overflow-hidden transition-all ${
+          product.status === 'Satıldı'
+            ? 'border-green-500/20 bg-green-500/5'
+            : 'border-white/10 bg-white/5'
+        }`}
+      >
         {/* Main row */}
         <button
           onClick={toggleExpanded}
           className="w-full text-left px-4 py-3.5 flex items-center gap-3"
         >
-          {/* Icon */}
-          <span className="text-2xl shrink-0">{getCategoryIcon(product.category)}</span>
+          {/* Thumbnail / Icon */}
+          {product.image ? (
+            <img
+              src={product.image}
+              alt={`${product.brand} ${product.model}`}
+              className="w-11 h-11 rounded-xl object-cover border border-white/15 shrink-0 bg-black/20"
+            />
+          ) : (
+            <span className="text-2xl shrink-0">{getCategoryIcon(product.category)}</span>
+          )}
 
           {/* Info */}
           <div className="flex-1 min-w-0">
@@ -82,9 +92,15 @@ export default function ProductCard({ product }: ProductCardProps) {
           {/* Right side */}
           <div className="flex items-center gap-2 shrink-0">
             {profit !== null ? (
-              <div className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold ${
-                profitPositive ? 'bg-green-500/15 text-green-400' : profitNegative ? 'bg-red-500/15 text-red-400' : 'bg-white/10 text-white/60'
-              }`}>
+              <div
+                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold ${
+                  profitPositive
+                    ? 'bg-green-500/15 text-green-400'
+                    : profitNegative
+                    ? 'bg-red-500/15 text-red-400'
+                    : 'bg-white/10 text-white/60'
+                }`}
+              >
                 {profitPositive ? <TrendingUp size={11} /> : profitNegative ? <TrendingDown size={11} /> : null}
                 {formatCurrency(profit)}
               </div>
@@ -94,13 +110,28 @@ export default function ProductCard({ product }: ProductCardProps) {
                 Stokta
               </div>
             )}
-            {expanded ? <ChevronUp size={15} className="text-white/40" /> : <ChevronDown size={15} className="text-white/40" />}
+            {expanded ? (
+              <ChevronUp size={15} className="text-white/40" />
+            ) : (
+              <ChevronDown size={15} className="text-white/40" />
+            )}
           </div>
         </button>
 
         {/* Expanded details */}
         {expanded && (
           <div className="px-4 pb-4 border-t border-white/10 pt-3 space-y-3">
+            {/* Büyük Resim Önizleme (Varsa) */}
+            {product.image && (
+              <div className="relative w-full h-44 rounded-2xl overflow-hidden border border-white/10 bg-black/20 flex items-center justify-center">
+                <img
+                  src={product.image}
+                  alt={`${product.brand} ${product.model}`}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            )}
+
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="bg-white/5 rounded-xl p-2.5">
                 <p className="text-white/40">Kategori</p>
@@ -108,7 +139,11 @@ export default function ProductCard({ product }: ProductCardProps) {
               </div>
               <div className="bg-white/5 rounded-xl p-2.5">
                 <p className="text-white/40">Durum</p>
-                <p className={`font-medium mt-0.5 ${product.status === 'Satıldı' ? 'text-green-400' : 'text-blue-400'}`}>
+                <p
+                  className={`font-medium mt-0.5 ${
+                    product.status === 'Satıldı' ? 'text-green-400' : 'text-blue-400'
+                  }`}
+                >
                   {product.status}
                 </p>
               </div>
@@ -127,9 +162,21 @@ export default function ProductCard({ product }: ProductCardProps) {
                 </div>
               )}
               {profit !== null && (
-                <div className={`rounded-xl p-2.5 ${profitPositive ? 'bg-green-500/10' : profitNegative ? 'bg-red-500/10' : 'bg-white/5'}`}>
+                <div
+                  className={`rounded-xl p-2.5 ${
+                    profitPositive
+                      ? 'bg-green-500/10'
+                      : profitNegative
+                      ? 'bg-red-500/10'
+                      : 'bg-white/5'
+                  }`}
+                >
                   <p className="text-white/40">Kar / Zarar</p>
-                  <p className={`font-semibold mt-0.5 ${profitPositive ? 'text-green-400' : profitNegative ? 'text-red-400' : ''}`}>
+                  <p
+                    className={`font-semibold mt-0.5 ${
+                      profitPositive ? 'text-green-400' : profitNegative ? 'text-red-400' : ''
+                    }`}
+                  >
                     {formatCurrency(profit)}
                   </p>
                 </div>
@@ -159,26 +206,27 @@ export default function ProductCard({ product }: ProductCardProps) {
                 onClick={() => setEditing(true)}
                 className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-medium hover:bg-white/10 transition"
               >
-                <Pencil size={12} /> Düzenle
+                <Pencil size={13} />
+                Düzenle
               </button>
               {!confirmDelete ? (
                 <button
                   onClick={() => setConfirmDelete(true)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/20 transition"
+                  className="px-3 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/20 transition"
                 >
-                  <Trash2 size={12} /> Sil
+                  <Trash2 size={13} />
                 </button>
               ) : (
-                <div className="flex-1 flex gap-1.5">
+                <div className="flex gap-1.5">
                   <button
                     onClick={() => deleteProduct(product.id)}
-                    className="flex-1 py-2.5 rounded-xl bg-red-500 text-white text-xs font-semibold"
+                    className="px-3 py-2.5 rounded-xl bg-red-500 text-white text-xs font-medium"
                   >
-                    Onayla
+                    Sil
                   </button>
                   <button
                     onClick={() => setConfirmDelete(false)}
-                    className="flex-1 py-2.5 rounded-xl bg-white/10 text-xs"
+                    className="px-3 py-2.5 rounded-xl bg-white/10 text-xs"
                   >
                     İptal
                   </button>

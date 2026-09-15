@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useApp } from '@/components/providers/AppProvider';
 import { Product } from '@/lib/types';
 import {
@@ -11,7 +11,7 @@ import {
   showMemoryField,
 } from '@/lib/utils';
 import { generateId } from '@/lib/store';
-import { X, Save, ShoppingCart, TrendingUp } from 'lucide-react';
+import { X, Save, ShoppingCart, TrendingUp, Image as ImageIcon, Trash2, Camera } from 'lucide-react';
 
 interface ProductFormProps {
   onClose: () => void;
@@ -21,6 +21,7 @@ interface ProductFormProps {
 
 export default function ProductForm({ onClose, editProduct, defaultType = 'purchase' }: ProductFormProps) {
   const { addProduct, updateProduct } = useApp();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [form, setForm] = useState<Partial<Product>>({
     id: editProduct?.id ?? generateId(),
@@ -35,6 +36,7 @@ export default function ProductForm({ onClose, editProduct, defaultType = 'purch
     purchaseDate: editProduct?.purchaseDate ?? getTodayISO(),
     saleDate: editProduct?.saleDate ?? (defaultType === 'sale' ? getTodayISO() : undefined),
     notes: editProduct?.notes ?? '',
+    image: editProduct?.image ?? '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -48,6 +50,48 @@ export default function ProductForm({ onClose, editProduct, defaultType = 'purch
   const set = (key: keyof Product, value: unknown) => {
     setForm((prev) => ({ ...prev, [key]: value }));
     setErrors((prev) => ({ ...prev, [key]: '' }));
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 600;
+        const MAX_HEIGHT = 600;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width = Math.round((width * MAX_HEIGHT) / height);
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressed = canvas.toDataURL('image/jpeg', 0.75);
+          set('image', compressed);
+        }
+      };
+      if (event.target?.result) {
+        img.src = event.target.result as string;
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const validate = (): boolean => {
@@ -64,9 +108,26 @@ export default function ProductForm({ onClose, editProduct, defaultType = 'purch
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    const product = form as Product;
+
+    const finalBrand = isCustomBrand ? customBrand.trim() : form.brand!;
+    const product: Product = {
+      id: form.id ?? generateId(),
+      category: form.category ?? 'Telefon',
+      brand: finalBrand,
+      model: form.model!.trim(),
+      memory: showMemoryField(form.category ?? '') ? form.memory : undefined,
+      purchasePrice: Number(form.purchasePrice),
+      salePrice: form.status === 'Satıldı' && form.salePrice ? Number(form.salePrice) : undefined,
+      expenses: Number(form.expenses ?? 0),
+      status: form.status ?? 'Stokta',
+      purchaseDate: form.purchaseDate ?? getTodayISO(),
+      saleDate: form.status === 'Satıldı' ? form.saleDate ?? getTodayISO() : undefined,
+      notes: form.notes?.trim() || undefined,
+      image: form.image || undefined,
+    };
+
     if (editProduct) {
-      updateProduct(editProduct.id, product);
+      updateProduct(product.id, product);
     } else {
       addProduct(product);
     }
@@ -84,7 +145,10 @@ export default function ProductForm({ onClose, editProduct, defaultType = 'purch
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative w-full sm:max-w-lg bg-[#1e2235] dark:bg-[#1e2235] light:bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl max-h-[92vh] flex flex-col overflow-hidden" style={{ backgroundColor: 'var(--bg-surface)' }}>
+      <div
+        className="relative w-full sm:max-w-lg bg-[#1e2235] dark:bg-[#1e2235] rounded-t-3xl sm:rounded-2xl shadow-2xl max-h-[92vh] flex flex-col overflow-hidden"
+        style={{ backgroundColor: 'var(--bg-surface)' }}
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
           <div className="flex items-center gap-2">
@@ -103,7 +167,43 @@ export default function ProductForm({ onClose, editProduct, defaultType = 'purch
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="overflow-y-auto flex-1 p-5 space-y-4">
+        <form id="product-form" onSubmit={handleSubmit} className="overflow-y-auto flex-1 p-5 space-y-4">
+          {/* Ürün Görseli Ekleme / Önizleme */}
+          <div>
+            <label className={labelCls}>Ürün Resmi (İsteğe bağlı)</label>
+            {form.image ? (
+              <div className="relative w-full h-36 rounded-2xl overflow-hidden border border-white/20 bg-black/20 group">
+                <img src={form.image} alt="Ürün Önizleme" className="w-full h-full object-contain" />
+                <button
+                  type="button"
+                  onClick={() => set('image', '')}
+                  className="absolute top-2 right-2 p-1.5 rounded-xl bg-red-500/80 hover:bg-red-500 text-white shadow-md transition"
+                  title="Resmi Kaldır"
+                >
+                  <Trash2 size={15} />
+                </button>
+              </div>
+            ) : (
+              <div>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full py-3 px-4 rounded-xl border border-dashed border-white/25 hover:border-primary/60 bg-white/5 hover:bg-white/10 flex items-center justify-center gap-2.5 text-xs text-white/70 transition"
+                >
+                  <Camera size={16} className="text-primary" />
+                  <span>Resim Seç veya Fotoğraf Çek</span>
+                </button>
+              </div>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              onChange={handleImageChange}
+              className="hidden"
+            />
+          </div>
+
           {/* Durum */}
           <div>
             <label className={labelCls}>Durum</label>
@@ -114,7 +214,9 @@ export default function ProductForm({ onClose, editProduct, defaultType = 'purch
                   type="button"
                   onClick={() => {
                     set('status', s);
-                    if (s === 'Satıldı' && !form.saleDate) set('saleDate', getTodayISO());
+                    if (s === 'Satıldı' && !form.saleDate) {
+                      set('saleDate', getTodayISO());
+                    }
                   }}
                   className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition ${
                     form.status === s
@@ -124,7 +226,7 @@ export default function ProductForm({ onClose, editProduct, defaultType = 'purch
                       : 'bg-white/5 text-white/50 border border-white/10'
                   }`}
                 >
-                  {s === 'Stokta' ? '📦 Stokta' : '✅ Satıldı'}
+                  {s}
                 </button>
               ))}
             </div>
@@ -139,15 +241,13 @@ export default function ProductForm({ onClose, editProduct, defaultType = 'purch
                   key={cat}
                   type="button"
                   onClick={() => set('category', cat)}
-                  className={`py-2 rounded-xl text-xs font-medium transition ${
+                  className={`py-2 px-1 rounded-xl text-xs font-medium transition text-center ${
                     form.category === cat
                       ? 'bg-primary/20 text-primary border border-primary/40'
                       : 'bg-white/5 text-white/50 border border-white/10'
                   }`}
                 >
-                  {cat === 'Telefon' ? '📱' : cat === 'Tablet' ? '📟' : cat === 'Laptop' ? '💻' : '📦'}
-                  <br />
-                  <span className="text-[10px]">{cat}</span>
+                  {cat === 'Laptop' ? 'Bilgisayar' : cat}
                 </button>
               ))}
             </div>
@@ -155,27 +255,35 @@ export default function ProductForm({ onClose, editProduct, defaultType = 'purch
 
           {/* Marka */}
           <div>
-            <label className={labelCls}>Marka</label>
+            <label className={labelCls}>Marka *</label>
             {!isCustomBrand ? (
-              <select
-                value={form.brand ?? ''}
-                onChange={(e) => {
-                  if (e.target.value === '__custom__') {
-                    setIsCustomBrand(true);
-                    set('brand', '');
-                  } else {
-                    set('brand', e.target.value);
-                  }
-                }}
-                className={inputCls}
-              >
-                <option value="">Seçin...</option>
-                {POPULAR_BRANDS.map((b) => (
-                  <option key={b} value={b === 'Diğer' ? '__custom__' : b}>
-                    {b}
+              <div className="space-y-2">
+                <select
+                  value={form.brand}
+                  onChange={(e) => {
+                    if (e.target.value === 'CUSTOM') {
+                      setIsCustomBrand(true);
+                      set('brand', '');
+                    } else {
+                      set('brand', e.target.value);
+                    }
+                  }}
+                  className={inputCls}
+                >
+                  <option value="" disabled className="bg-surface text-foreground">
+                    Marka seçin...
                   </option>
-                ))}
-              </select>
+                  {POPULAR_BRANDS.map((b) => (
+                    <option key={b} value={b} className="bg-surface text-foreground">
+                      {b}
+                    </option>
+                  ))}
+                  <option value="CUSTOM" className="bg-surface text-foreground">
+                    + Farklı Marka Yaz...
+                  </option>
+                </select>
+                {errors.brand && <p className={errCls}>{errors.brand}</p>}
+              </div>
             ) : (
               <div className="flex gap-2">
                 <input
@@ -191,22 +299,24 @@ export default function ProductForm({ onClose, editProduct, defaultType = 'purch
                 />
                 <button
                   type="button"
-                  onClick={() => { setIsCustomBrand(false); set('brand', ''); }}
-                  className="px-3 rounded-xl bg-white/10 text-xs"
+                  onClick={() => {
+                    setIsCustomBrand(false);
+                    set('brand', 'Apple');
+                  }}
+                  className="px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white/60 hover:bg-white/10 shrink-0"
                 >
-                  Listeden
+                  Listeden Seç
                 </button>
               </div>
             )}
-            {errors.brand && <p className={errCls}>{errors.brand}</p>}
           </div>
 
           {/* Model */}
           <div>
-            <label className={labelCls}>Model</label>
+            <label className={labelCls}>Model *</label>
             <input
               type="text"
-              placeholder="ör. iPhone 15 Pro Max"
+              placeholder="Örn: iPhone 15 Pro, Galaxy S24, M3 Pro..."
               value={form.model ?? ''}
               onChange={(e) => set('model', e.target.value)}
               className={inputCls}
@@ -215,30 +325,34 @@ export default function ProductForm({ onClose, editProduct, defaultType = 'purch
           </div>
 
           {/* Hafıza */}
-          {showMemoryField(form.category ?? 'Telefon') && (
+          {showMemoryField(form.category ?? '') && (
             <div>
               <label className={labelCls}>Hafıza</label>
-              <select
-                value={form.memory ?? '128 GB'}
-                onChange={(e) => set('memory', e.target.value)}
-                className={inputCls}
-              >
-                {MEMORY_OPTIONS.map((m) => (
-                  <option key={m} value={m}>
-                    {m}
-                  </option>
+              <div className="grid grid-cols-4 gap-1.5">
+                {MEMORY_OPTIONS.map((mem) => (
+                  <button
+                    key={mem}
+                    type="button"
+                    onClick={() => set('memory', mem)}
+                    className={`py-1.5 rounded-lg text-xs font-medium transition ${
+                      form.memory === mem
+                        ? 'bg-primary/20 text-primary border border-primary/40'
+                        : 'bg-white/5 text-white/50 border border-white/10'
+                    }`}
+                  >
+                    {mem}
+                  </button>
                 ))}
-              </select>
+              </div>
             </div>
           )}
 
           {/* Fiyatlar */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className={labelCls}>Alış Fiyatı (₺)</label>
+              <label className={labelCls}>Alış Fiyatı (TL) *</label>
               <input
                 type="number"
-                min="0"
                 placeholder="0"
                 value={form.purchasePrice || ''}
                 onChange={(e) => set('purchasePrice', Number(e.target.value))}
@@ -246,11 +360,11 @@ export default function ProductForm({ onClose, editProduct, defaultType = 'purch
               />
               {errors.purchasePrice && <p className={errCls}>{errors.purchasePrice}</p>}
             </div>
+
             <div>
-              <label className={labelCls}>Masraf (₺)</label>
+              <label className={labelCls}>Masraf (TL)</label>
               <input
                 type="number"
-                min="0"
                 placeholder="0"
                 value={form.expenses || ''}
                 onChange={(e) => set('expenses', Number(e.target.value))}
@@ -259,13 +373,12 @@ export default function ProductForm({ onClose, editProduct, defaultType = 'purch
             </div>
           </div>
 
-          {/* Satış fiyatı */}
+          {/* Satış Fiyatı (Satıldı ise) */}
           {form.status === 'Satıldı' && (
             <div>
-              <label className={labelCls}>Satış Fiyatı (₺)</label>
+              <label className={labelCls}>Satış Fiyatı (TL) *</label>
               <input
                 type="number"
-                min="0"
                 placeholder="0"
                 value={form.salePrice || ''}
                 onChange={(e) => set('salePrice', Number(e.target.value))}

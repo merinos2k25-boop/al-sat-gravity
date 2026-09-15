@@ -80,9 +80,8 @@ export default function DraggableFab({ onClick, color = 'primary', ariaLabel }: 
     colorStyles =
       'bg-gradient-to-tr from-emerald-600 to-green-500 text-white shadow-[0_12px_30px_rgba(34,197,94,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] border border-green-300/30';
   } else if (isWhite) {
-    colorStyles = isLight
-      ? 'bg-slate-900 text-white shadow-[0_12px_30px_rgba(0,0,0,0.35),inset_0_1px_1px_rgba(255,255,255,0.3)] border border-slate-700/60'
-      : 'bg-white text-black shadow-[0_12px_30px_rgba(255,255,255,0.35),inset_0_1px_1px_rgba(255,255,255,0.8)] border border-white/60';
+    colorStyles =
+      'bg-white text-slate-900 shadow-[0_12px_30px_rgba(0,0,0,0.2),inset_0_1px_1px_rgba(255,255,255,0.9)] border border-slate-300/80 dark:border-white/60';
   } else {
     colorStyles =
       'bg-primary text-white shadow-[0_12px_30px_hsl(var(--primary-hsl)/0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] border border-white/20';

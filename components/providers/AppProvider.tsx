@@ -61,7 +61,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       cyan: '189 94% 43%',
       indigo: '239 84% 67%',
       crimson: '350 89% 50%',
-      white: isLight ? '0 0% 12%' : '0 0% 98%',
+      white: '0 0% 98%',
     };
     root.style.setProperty('--primary-hsl', colorMap[settings.colorTheme] ?? colorMap.blue);
   }, [settings]);
