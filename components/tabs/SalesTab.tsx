@@ -6,7 +6,8 @@ import ProductCard from '@/components/ui/ProductCard';
 import ProductForm from '@/components/ui/ProductForm';
 import { Category } from '@/lib/types';
 import { CATEGORIES, getCategoryIcon } from '@/lib/utils';
-import { Plus, Search, X, SlidersHorizontal } from 'lucide-react';
+import { Search, X, SlidersHorizontal } from 'lucide-react';
+import DraggableFab from '@/components/ui/DraggableFab';
 
 type SortOption = 'date-desc' | 'date-asc' | 'profit-desc' | 'profit-asc';
 
@@ -127,14 +128,8 @@ export default function SalesTab() {
         </div>
       )}
 
-      {/* Yuvarlak Satış Ekle Butonu (Alt Barın Üst Kısmında Konumlandırılmış FAB) */}
-      <button
-        onClick={() => setShowForm(true)}
-        className="fixed bottom-24 right-5 z-40 w-14 h-14 rounded-full bg-green-500 text-white shadow-[0_8px_25px_rgba(34,197,94,0.4)] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
-        aria-label="Satış Ekle"
-      >
-        <Plus size={28} strokeWidth={2.5} />
-      </button>
+      {/* Yerinden Oynatılabilir ve Serbest Bırakınca Eski Yerine Dönen Satış Ekle Butonu */}
+      <DraggableFab onClick={() => setShowForm(true)} color="green" ariaLabel="Satış Ekle" />
     </div>
   );
 }

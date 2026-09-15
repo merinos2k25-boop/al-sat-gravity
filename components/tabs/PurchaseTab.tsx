@@ -6,7 +6,8 @@ import ProductCard from '@/components/ui/ProductCard';
 import ProductForm from '@/components/ui/ProductForm';
 import { Category } from '@/lib/types';
 import { CATEGORIES, getCategoryIcon } from '@/lib/utils';
-import { Plus, Search, X, SlidersHorizontal } from 'lucide-react';
+import { Search, X, SlidersHorizontal } from 'lucide-react';
+import DraggableFab from '@/components/ui/DraggableFab';
 
 type SortOption = 'date-desc' | 'date-asc' | 'price-desc' | 'price-asc';
 
@@ -124,14 +125,8 @@ export default function PurchaseTab() {
         </div>
       )}
 
-      {/* Yuvarlak Alış Ekle Butonu (Alt Barın Üst Kısmında Konumlandırılmış FAB) */}
-      <button
-        onClick={() => setShowForm(true)}
-        className="fixed bottom-24 right-5 z-40 w-14 h-14 rounded-full bg-primary text-white shadow-[0_8px_25px_rgba(0,0,0,0.35)] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
-        aria-label="Alış Ekle"
-      >
-        <Plus size={28} strokeWidth={2.5} />
-      </button>
+      {/* Yerinden Oynatılabilir ve Serbest Bırakınca Eski Yerine Dönen Alış Ekle Butonu */}
+      <DraggableFab onClick={() => setShowForm(true)} color="primary" ariaLabel="Alış Ekle" />
     </div>
   );
 }
