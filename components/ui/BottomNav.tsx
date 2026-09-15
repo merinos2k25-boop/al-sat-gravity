@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { Home, ShoppingCart, TrendingUp, BarChart3, Settings } from 'lucide-react';
 import { useApp } from '@/components/providers/AppProvider';
 
@@ -78,20 +78,20 @@ export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
     } catch {
       // ignore
     }
-    // Parmağın en son bırakıldığı sekmede kesin olarak kal
     const finalIndex = lastTargetIndexRef.current;
     if (finalIndex >= 0 && finalIndex < tabs.length) {
       onChange(tabs[finalIndex].id);
     }
   };
 
-  // Kapsül arka planı ve ışıması
-  const getCapsuleStyle = () => {
+  // ─── Kapsül stili ────────────────────────────────────────────────────────────
+  // Tamamen JS tabanlı — dark: Tailwind prefixi kullanmıyoruz (OS tercihine bakmasın)
+  const getCapsuleStyle = (): React.CSSProperties => {
     if (isWhiteTheme) {
       return isLight
         ? {
-            backgroundColor: 'rgba(0, 0, 0, 0.09)',
-            borderColor: 'rgba(0, 0, 0, 0.18)',
+            backgroundColor: 'rgba(0, 0, 0, 0.10)',
+            borderColor: 'rgba(0, 0, 0, 0.20)',
             boxShadow: '0 4px 15px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.8)',
           }
         : {
@@ -114,13 +114,30 @@ export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
         };
   };
 
-  // Aktif ikon rengi
-  const getActiveIconColor = () => {
+  // ─── Aktif ikon rengi ────────────────────────────────────────────────────────
+  const getActiveIconColor = (): string => {
     if (isWhiteTheme) {
       return isLight ? '#0f172a' : '#ffffff';
     }
     return 'hsl(var(--primary-hsl))';
   };
+
+  // ─── Nav bar arka planı ──────────────────────────────────────────────────────
+  // dark: prefixi YOK — JS ile app temasına göre belirleniyor
+  const navStyle: React.CSSProperties = isLight
+    ? {
+        backgroundColor: 'rgba(255, 255, 255, 0.90)',
+        borderColor: 'rgba(0, 0, 0, 0.10)',
+        boxShadow: '0 15px 35px rgba(0,0,0,0.12)',
+      }
+    : {
+        backgroundColor: 'rgba(12, 14, 20, 0.90)',
+        borderColor: 'rgba(255, 255, 255, 0.18)',
+        boxShadow: '0 20px 45px -10px rgba(0,0,0,0.7), inset 0 1px 1px 0 rgba(255,255,255,0.28)',
+      };
+
+  // Pasif ikon rengi
+  const inactiveIconColor = isLight ? '#94a3b8' : 'rgba(255,255,255,0.45)';
 
   return (
     <div
@@ -135,9 +152,10 @@ export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
-        className="pointer-events-auto relative w-full max-w-sm h-16 rounded-full px-1.5 py-1 flex items-center bg-white/85 dark:bg-[#0c0e14]/85 backdrop-blur-2xl border border-black/10 dark:border-white/20 select-none cursor-pointer touch-none shadow-[0_15px_35px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_45px_-10px_rgba(0,0,0,0.7),inset_0_1px_1px_0_rgba(255,255,255,0.28)]"
+        className="pointer-events-auto relative w-full max-w-sm h-16 rounded-full px-1.5 py-1 flex items-center backdrop-blur-2xl border select-none cursor-pointer touch-none"
+        style={navStyle}
       >
-        {/* Sekmeler Arasında Pürüzsüzce Kayan iOS 26 Glass Kapsül Hapı */}
+        {/* Kayan Kapsül */}
         <div
           className="absolute top-1.5 bottom-1.5 rounded-full backdrop-blur-xl border transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none"
           style={{
@@ -165,21 +183,17 @@ export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
                 <Icon
                   size={22}
                   strokeWidth={active ? 2.5 : 1.9}
+                  className="transition-all duration-300"
                   style={
                     active
                       ? {
                           color: getActiveIconColor(),
                           filter: isLight
                             ? 'drop-shadow(0 2px 5px rgba(0,0,0,0.15))'
-                            : 'drop-shadow(0 0 8px hsl(var(--primary-hsl) / 0.9))',
+                            : `drop-shadow(0 0 8px hsl(var(--primary-hsl) / 0.9))`,
                         }
-                      : undefined
+                      : { color: inactiveIconColor }
                   }
-                  className={`transition-all duration-300 ${
-                    active
-                      ? 'scale-115 font-bold'
-                      : 'text-slate-400 group-hover:text-slate-700 dark:text-white/50 dark:group-hover:text-white/80'
-                  }`}
                 />
               </div>
             </button>
