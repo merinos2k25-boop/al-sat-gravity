@@ -40,20 +40,6 @@ body {
   overscroll-behavior: none;
 }
 
-/* ===== Beyaz Tema Rengi İçin Mükemmel Kontrast ===== */
-.dark.color-theme-white .bg-primary,
-.dark.color-theme-white button.bg-primary,
-.dark.color-theme-white .bg-primary *,
-.dark.color-theme-white [class*="bg-primary"] text {
-  color: #000000 !important;
-  fill: #000000 !important;
-}
-.light.color-theme-white .bg-primary,
-.light.color-theme-white button.bg-primary,
-.light.color-theme-white .bg-primary * {
-  color: #ffffff !important;
-}
-
 .safe-area-bottom {
   padding-bottom: max(env(safe-area-inset-bottom, 4px), 4px);
 }
@@ -86,9 +72,9 @@ body {
 
 /* =========================================================
    AÇIK MOD (LIGHT) İÇİN YAZI & ARKA PLAN DÜZELTMELERİ
-   (Tüm beyaz yazılar net siyah/koyu renge dönüştürülür)
    ========================================================= */
 
+/* text-white sınıflarını koyu renge çevir */
 .light .text-white { color: #090d16 !important; }
 .light .text-white\/90 { color: rgba(9, 13, 22, 0.9) !important; }
 .light .text-white\/80 { color: rgba(9, 13, 22, 0.82) !important; }
@@ -100,6 +86,7 @@ body {
 .light .placeholder\:text-white\/40::placeholder,
 .light .placeholder\:text-white\/30::placeholder { color: rgba(9, 13, 22, 0.42) !important; }
 
+/* bg-white sınıflarını hafif koyu tona çevir */
 .light .bg-white\/5  { background-color: rgba(9, 13, 22, 0.05) !important; }
 .light .bg-white\/10 { background-color: rgba(9, 13, 22, 0.08) !important; }
 .light .bg-white\/15 { background-color: rgba(9, 13, 22, 0.12) !important; }
@@ -110,10 +97,49 @@ body {
 .light .border-white\/25 { border-color: rgba(9, 13, 22, 0.25) !important; }
 .light .border-white\/30 { border-color: rgba(9, 13, 22, 0.3) !important; }
 
-/* Buton ve rozet içindeki beyaz yazıların korunması (Primary ve Renkli butonlar) */
+/* =========================================================
+   AÇIK MOD: bg-primary BUTONLARINDA METİN RENGİ KORUMA
+   bg-primary koyu renkli temalarda karanlık bton var, text white görünmeli
+   ========================================================= */
 .light button.bg-primary,
 .light .bg-primary .text-white,
 .light button.bg-green-500,
 .light button.bg-red-500 {
   color: #ffffff !important;
+}
+
+/* =========================================================
+   text-white'ın bg-primary içindeyken korunması (chip, rozet vs.)
+   ========================================================= */
+.light .bg-primary span.text-white,
+.light .bg-primary div.text-white {
+  color: #ffffff !important;
+}
+
+/* =========================================================
+   AÇIK MOD: KART ve MODAL İÇİ ÖZEL DÜZELTMELEr
+   ========================================================= */
+
+/* İnput ve textarea background düzeltmesi */
+.light input,
+.light textarea,
+.light select {
+  background-color: rgba(9, 13, 22, 0.05) !important;
+  border-color: rgba(9, 13, 22, 0.15) !important;
+  color: #090d16 !important;
+}
+
+/* Modal arka planı */
+.light [style*="--bg-surface"] {
+  background-color: #ffffff;
+}
+
+/* =========================================================
+   AÇIK MOD: backdrop-blur barengi düzeltmesi
+   backdrop-blur ile beraber hafif beyaz zemin katmanı
+   ========================================================= */
+.light .backdrop-blur-2xl,
+.light .backdrop-blur-xl,
+.light .backdrop-blur-md {
+  --tw-backdrop-blur: blur(20px);
 }

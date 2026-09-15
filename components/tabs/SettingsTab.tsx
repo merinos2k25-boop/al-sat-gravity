@@ -89,10 +89,10 @@ export default function SettingsTab() {
   ];
 
   return (
-    <div className="px-4 pt-4 pb-32 space-y-4">
-      <div>
-        <h1 className="text-xl font-bold">⚙️ Ayarlar</h1>
-        <p className="text-white/50 text-xs mt-0.5">Uygulama tercihlerini özelleştir</p>
+    <div className="px-4 pt-6 pb-32 space-y-4">
+      <div className="pt-2">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">⚙️ Ayarlar</h1>
+        <p className="text-white/50 text-xs mt-1">Uygulama tercihlerini özelleştir</p>
       </div>
 
       {/* Theme */}
@@ -107,9 +107,10 @@ export default function SettingsTab() {
               onClick={() => updateSettings({ theme: id })}
               className={`flex-1 flex flex-col items-center gap-1.5 py-3 px-3 rounded-xl border transition-all ${
                 settings.theme === id
-                  ? 'border-primary bg-primary/15 text-primary shadow-sm font-semibold'
+                  ? 'border-primary bg-primary/15 font-semibold shadow-sm'
                   : 'border-white/10 bg-white/5 text-white/60 hover:text-white/90'
               }`}
+              style={settings.theme === id ? { color: 'hsl(var(--primary-hsl))' } : undefined}
             >
               <Icon size={22} />
               <span className="text-xs">{label}</span>
@@ -128,16 +129,19 @@ export default function SettingsTab() {
               onClick={() => updateSettings({ colorTheme: id })}
               className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border text-xs font-medium transition-all ${
                 settings.colorTheme === id
-                  ? 'border-primary bg-primary/15 text-primary shadow-sm font-semibold'
+                  ? 'border-primary bg-primary/15 shadow-sm font-semibold'
                   : 'border-white/10 bg-white/5 text-white/60 hover:text-white/90'
               }`}
+              style={settings.colorTheme === id ? { color: 'hsl(var(--primary-hsl))' } : undefined}
             >
               <span
                 className="w-4 h-4 rounded-full inline-block shrink-0 shadow-sm border border-white/30"
                 style={{ backgroundColor: color }}
               />
               <span className="truncate">{label}</span>
-              {settings.colorTheme === id && <Check size={13} className="ml-auto text-primary shrink-0" />}
+              {settings.colorTheme === id && (
+                <Check size={13} className="ml-auto shrink-0" style={{ color: 'hsl(var(--primary-hsl))' }} />
+              )}
             </button>
           ))}
         </div>

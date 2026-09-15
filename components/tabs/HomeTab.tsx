@@ -177,31 +177,34 @@ export default function HomeTab() {
         <div className="flex gap-1.5 p-1 bg-white/5 rounded-xl border border-white/10 text-xs">
           <button
             onClick={() => handleSetStatusFilter('all')}
-            className={`px-2.5 py-1 rounded-lg transition-all font-medium ${
+            className={`px-2.5 py-1 rounded-lg transition-all font-semibold ${
               statusFilter === 'all'
-                ? 'bg-primary text-white shadow-sm'
+                ? 'bg-primary !text-white dark:!text-white shadow-sm'
                 : 'text-white/50 hover:text-white/80'
             }`}
+            style={statusFilter === 'all' ? { color: 'white' } : undefined}
           >
             Tümü
           </button>
           <button
             onClick={() => handleSetStatusFilter('inStock')}
-            className={`px-2.5 py-1 rounded-lg transition-all font-medium ${
+            className={`px-2.5 py-1 rounded-lg transition-all font-semibold ${
               statusFilter === 'inStock'
-                ? 'bg-blue-500 text-white shadow-sm'
+                ? 'bg-blue-500 !text-white shadow-sm'
                 : 'text-white/50 hover:text-white/80'
             }`}
+            style={statusFilter === 'inStock' ? { color: 'white' } : undefined}
           >
             Stokta
           </button>
           <button
             onClick={() => handleSetStatusFilter('sold')}
-            className={`px-2.5 py-1 rounded-lg transition-all font-medium ${
+            className={`px-2.5 py-1 rounded-lg transition-all font-semibold ${
               statusFilter === 'sold'
-                ? 'bg-green-500 text-white shadow-sm'
+                ? 'bg-green-500 !text-white shadow-sm'
                 : 'text-white/50 hover:text-white/80'
             }`}
+            style={statusFilter === 'sold' ? { color: 'white' } : undefined}
           >
             Satılanlar
           </button>
