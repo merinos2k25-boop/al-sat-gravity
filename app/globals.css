@@ -28,17 +28,30 @@
   --text-foreground: #090d16;
 }
 
-/* ===== Base Styles ===== */
-html {
-  font-family: var(--font-family);
+/* ===== Universal Font Enforcement ===== */
+html, body, button, input, select, textarea, p, h1, h2, h3, h4, span, a, label {
+  font-family: var(--font-family) !important;
 }
 
 body {
   background-color: var(--bg-background);
   color: var(--text-foreground);
-  font-family: var(--font-family);
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior: none;
+}
+
+/* ===== Beyaz Tema Rengi İçin Mükemmel Kontrast ===== */
+.dark.color-theme-white .bg-primary,
+.dark.color-theme-white button.bg-primary,
+.dark.color-theme-white .bg-primary *,
+.dark.color-theme-white [class*="bg-primary"] text {
+  color: #000000 !important;
+  fill: #000000 !important;
+}
+.light.color-theme-white .bg-primary,
+.light.color-theme-white button.bg-primary,
+.light.color-theme-white .bg-primary * {
+  color: #ffffff !important;
 }
 
 .safe-area-bottom {

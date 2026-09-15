@@ -24,22 +24,46 @@ export default function HomeTab() {
   const { products, summary } = useApp();
   const [search, setSearch] = useState('');
 
-  // Açık olan kategorilerin state'i (varsayılan olarak ürün olanlar açık, hiç ürün yoksa Telefon açık)
-  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({
-    Telefon: true,
-    Tablet: true,
-    Laptop: true,
-    Diğer: true,
+  // Açık olan kategorilerin state'i (localStorage'dan geri yüklenir, bırakıldığı gibi kalır)
+  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('home_open_categories');
+        if (saved) return JSON.parse(saved);
+      } catch {
+        // ignore
+      }
+    }
+    return { Telefon: true, Tablet: true, Laptop: true, Diğer: true };
   });
 
-  // Kategori bazlı filtreleme ve satılan ürünlerin gösterimi
-  const [statusFilter, setStatusFilter] = useState<'all' | 'inStock' | 'sold'>('all');
+  // Kategori bazlı filtreleme ve satılan ürünlerin gösterimi (hafızada saklanır)
+  const [statusFilter, setStatusFilter] = useState<'all' | 'inStock' | 'sold'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('home_status_filter');
+      if (saved === 'all' || saved === 'inStock' || saved === 'sold') return saved;
+    }
+    return 'all';
+  });
+
+  const handleSetStatusFilter = (filter: 'all' | 'inStock' | 'sold') => {
+    setStatusFilter(filter);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('home_status_filter', filter);
+    }
+  };
 
   const toggleCategory = (catId: string) => {
-    setOpenCategories((prev) => ({
-      ...prev,
-      [catId]: !prev[catId],
-    }));
+    setOpenCategories((prev) => {
+      const updated = {
+        ...prev,
+        [catId]: !prev[catId],
+      };
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('home_open_categories', JSON.stringify(updated));
+      }
+      return updated;
+    });
   };
 
   const toggleAllCategories = () => {
@@ -50,6 +74,9 @@ export default function HomeTab() {
       updated[c.id] = nextState;
     });
     setOpenCategories(updated);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('home_open_categories', JSON.stringify(updated));
+    }
   };
 
   // Kategorilere göre filtrelenmiş ürünler
@@ -149,7 +176,7 @@ export default function HomeTab() {
       <div className="flex items-center justify-between gap-2 pt-1">
         <div className="flex gap-1.5 p-1 bg-white/5 rounded-xl border border-white/10 text-xs">
           <button
-            onClick={() => setStatusFilter('all')}
+            onClick={() => handleSetStatusFilter('all')}
             className={`px-2.5 py-1 rounded-lg transition-all font-medium ${
               statusFilter === 'all'
                 ? 'bg-primary text-white shadow-sm'
@@ -159,7 +186,7 @@ export default function HomeTab() {
             Tümü
           </button>
           <button
-            onClick={() => setStatusFilter('inStock')}
+            onClick={() => handleSetStatusFilter('inStock')}
             className={`px-2.5 py-1 rounded-lg transition-all font-medium ${
               statusFilter === 'inStock'
                 ? 'bg-blue-500 text-white shadow-sm'
@@ -169,7 +196,7 @@ export default function HomeTab() {
             Stokta
           </button>
           <button
-            onClick={() => setStatusFilter('sold')}
+            onClick={() => handleSetStatusFilter('sold')}
             className={`px-2.5 py-1 rounded-lg transition-all font-medium ${
               statusFilter === 'sold'
                 ? 'bg-green-500 text-white shadow-sm'

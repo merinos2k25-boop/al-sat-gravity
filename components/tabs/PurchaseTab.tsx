@@ -16,8 +16,25 @@ export default function PurchaseTab() {
   const [showForm, setShowForm] = useState(false);
   const [search, setSearch] = useState('');
   const [filterCategory, setFilterCategory] = useState<Category | 'Tümü'>('Tümü');
+  const [showFilters, setShowFilters] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('purchase_show_filters');
+      if (saved !== null) return saved === 'true';
+    }
+    return false;
+  });
+
+  const toggleShowFilters = () => {
+    setShowFilters((prev) => {
+      const next = !prev;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('purchase_show_filters', String(next));
+      }
+      return next;
+    });
+  };
+
   const [sort, setSort] = useState<SortOption>('date-desc');
-  const [showFilters, setShowFilters] = useState(false);
 
   const purchases = useMemo(() => {
     return products
@@ -65,7 +82,7 @@ export default function PurchaseTab() {
             </button>
           )}
           <button
-            onClick={() => setShowFilters(!showFilters)}
+            onClick={toggleShowFilters}
             className={`p-1.5 rounded-lg transition ${showFilters ? 'bg-primary/20 text-primary' : 'text-white/40 hover:text-white/70'}`}
           >
             <SlidersHorizontal size={14} />

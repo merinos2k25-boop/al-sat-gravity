@@ -43,8 +43,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Apply theme & font to document
   useEffect(() => {
     const root = document.documentElement;
+    const isLight = settings.theme === 'light';
     root.classList.remove('dark', 'light', 'sepia');
-    root.classList.add(settings.theme || 'dark');
+    root.classList.add(isLight ? 'light' : 'dark');
+    root.classList.toggle('color-theme-white', settings.colorTheme === 'white');
 
     const colorMap: Record<string, string> = {
       blue: '221 83% 53%',
@@ -57,18 +59,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       cyan: '189 94% 43%',
       indigo: '239 84% 67%',
       crimson: '350 89% 50%',
+      white: isLight ? '0 0% 12%' : '0 0% 98%', // Beyaz tema: koyu modda bembeyaz, açık modda kontrast monokrom
     };
     root.style.setProperty('--primary-hsl', colorMap[settings.colorTheme] ?? colorMap.blue);
 
     const fontMap: Record<string, string> = {
-      default: "'Inter', var(--font-inter), sans-serif",
-      mono: "'JetBrains Mono', var(--font-mono), monospace",
-      rounded: "'Nunito', var(--font-rounded), sans-serif",
-      serif: "'Playfair Display', var(--font-serif), Georgia, serif",
-      modern: "'Outfit', var(--font-modern), sans-serif",
-      compact: "'Plus Jakarta Sans', var(--font-compact), sans-serif",
+      default: "var(--font-inter), 'Inter', -apple-system, sans-serif",
+      mono: "var(--font-mono), 'JetBrains Mono', monospace",
+      rounded: "var(--font-rounded), 'Nunito', sans-serif",
+      serif: "var(--font-serif), 'Playfair Display', Georgia, serif",
+      modern: "var(--font-modern), 'Outfit', sans-serif",
+      compact: "var(--font-compact), 'Plus Jakarta Sans', sans-serif",
     };
-    root.style.setProperty('--font-family', fontMap[settings.fontFamily] ?? fontMap.default);
+    const activeFont = fontMap[settings.fontFamily] ?? fontMap.default;
+    root.style.setProperty('--font-family', activeFont);
+    root.style.fontFamily = activeFont;
+    if (typeof document !== 'undefined' && document.body) {
+      document.body.style.fontFamily = activeFont;
+    }
   }, [settings]);
 
   const summary = calculateSummary(products);

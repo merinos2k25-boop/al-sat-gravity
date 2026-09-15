@@ -13,14 +13,32 @@ interface SectionProps {
   title: string;
   children: React.ReactNode;
   defaultOpen?: boolean;
+  storageKey?: string;
 }
 
-function Section({ icon, title, children, defaultOpen = false }: SectionProps) {
-  const [open, setOpen] = useState(defaultOpen);
+function Section({ icon, title, children, defaultOpen = false, storageKey }: SectionProps) {
+  const [open, setOpen] = useState(() => {
+    if (typeof window !== 'undefined' && storageKey) {
+      const saved = localStorage.getItem(`section_${storageKey}`);
+      if (saved !== null) return saved === 'true';
+    }
+    return defaultOpen;
+  });
+
+  const toggle = () => {
+    setOpen((prev) => {
+      const next = !prev;
+      if (typeof window !== 'undefined' && storageKey) {
+        localStorage.setItem(`section_${storageKey}`, String(next));
+      }
+      return next;
+    });
+  };
+
   return (
     <div className="bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
       <button
-        onClick={() => setOpen(!open)}
+        onClick={toggle}
         className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-white/5 transition"
       >
         <div className="flex items-center gap-3">
@@ -58,6 +76,7 @@ export default function SettingsTab() {
   };
 
   const themes: { id: ColorTheme; label: string; color: string }[] = [
+    { id: 'white', label: 'Beyaz / Gümüş', color: '#ffffff' },
     { id: 'blue', label: 'Mavi', color: '#3b82f6' },
     { id: 'green', label: 'Yeşil', color: '#22c55e' },
     { id: 'purple', label: 'Mor', color: '#a855f7' },
@@ -87,7 +106,7 @@ export default function SettingsTab() {
       </div>
 
       {/* Theme */}
-      <Section icon={<Moon size={16} />} title="Görünüm Teması" defaultOpen>
+      <Section icon={<Moon size={16} />} title="Görünüm Teması" defaultOpen storageKey="theme">
         <div className="flex gap-3">
           {([
             { id: 'dark' as AppTheme, label: 'Koyu Mod', icon: Moon, desc: 'Karanlık & Şık' },
@@ -111,7 +130,7 @@ export default function SettingsTab() {
       </Section>
 
       {/* Color theme */}
-      <Section icon={<Palette size={16} />} title="Renk Teması" defaultOpen>
+      <Section icon={<Palette size={16} />} title="Renk Teması" defaultOpen storageKey="color">
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {themes.map(({ id, label, color }) => (
             <button
@@ -124,7 +143,7 @@ export default function SettingsTab() {
               }`}
             >
               <span
-                className="w-4 h-4 rounded-full inline-block shrink-0 shadow-sm"
+                className="w-4 h-4 rounded-full inline-block shrink-0 shadow-sm border border-white/20"
                 style={{ backgroundColor: color }}
               />
               <span className="truncate">{label}</span>
@@ -135,7 +154,7 @@ export default function SettingsTab() {
       </Section>
 
       {/* Font */}
-      <Section icon={<Type size={16} />} title="Yazı Stili">
+      <Section icon={<Type size={16} />} title="Yazı Stili" storageKey="font">
         <div className="grid grid-cols-3 gap-2">
           {fonts.map(({ id, label, preview, fontStyle }) => (
             <button
@@ -156,7 +175,7 @@ export default function SettingsTab() {
       </Section>
 
       {/* Data */}
-      <Section icon={<Download size={16} />} title="Veri Yönetimi">
+      <Section icon={<Download size={16} />} title="Veri Yönetimi" storageKey="data">
         <div className="space-y-2.5">
           <button
             onClick={exportJSON}
@@ -236,7 +255,7 @@ export default function SettingsTab() {
       </Section>
 
       {/* About */}
-      <Section icon={<Info size={16} />} title="Hakkında">
+      <Section icon={<Info size={16} />} title="Hakkında" storageKey="about">
         <div className="space-y-3 text-sm">
           <div className="flex items-center justify-center py-4">
             <div className="text-center">

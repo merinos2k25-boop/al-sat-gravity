@@ -17,7 +17,23 @@ export default function SalesTab() {
   const [search, setSearch] = useState('');
   const [filterCategory, setFilterCategory] = useState<Category | 'Tümü'>('Tümü');
   const [sort, setSort] = useState<SortOption>('date-desc');
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('sales_show_filters');
+      if (saved !== null) return saved === 'true';
+    }
+    return false;
+  });
+
+  const toggleShowFilters = () => {
+    setShowFilters((prev) => {
+      const next = !prev;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('sales_show_filters', String(next));
+      }
+      return next;
+    });
+  };
 
   const sales = useMemo(() => {
     return products
@@ -68,7 +84,7 @@ export default function SalesTab() {
             </button>
           )}
           <button
-            onClick={() => setShowFilters(!showFilters)}
+            onClick={toggleShowFilters}
             className={`p-1.5 rounded-lg transition ${showFilters ? 'bg-green-500/20 text-green-400' : 'text-white/40'}`}
           >
             <SlidersHorizontal size={14} />

@@ -21,7 +21,8 @@ export type ColorTheme =
   | 'emerald'
   | 'cyan'
   | 'indigo'
-  | 'crimson';
+  | 'crimson'
+  | 'white';
 export type AppTheme = 'dark' | 'light';
 
 export interface Product {

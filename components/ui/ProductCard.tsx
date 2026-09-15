@@ -13,7 +13,24 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const { deleteProduct } = useApp();
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(`card_exp_${product.id}`);
+      if (saved !== null) return saved === 'true';
+    }
+    return false;
+  });
+
+  const toggleExpanded = () => {
+    setExpanded((prev) => {
+      const next = !prev;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(`card_exp_${product.id}`, String(next));
+      }
+      return next;
+    });
+  };
+
   const [editing, setEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -36,7 +53,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       }`}>
         {/* Main row */}
         <button
-          onClick={() => setExpanded(!expanded)}
+          onClick={toggleExpanded}
           className="w-full text-left px-4 py-3.5 flex items-center gap-3"
         >
           {/* Icon */}
