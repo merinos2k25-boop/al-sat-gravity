@@ -52,13 +52,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       purple: '270 76% 58%',
       orange: '25 95% 53%',
       rose: '347 89% 60%',
+      amber: '38 92% 50%',
+      emerald: '160 84% 39%',
+      cyan: '189 94% 43%',
+      indigo: '239 84% 67%',
+      crimson: '350 89% 50%',
     };
     root.style.setProperty('--primary-hsl', colorMap[settings.colorTheme] ?? colorMap.blue);
 
     const fontMap: Record<string, string> = {
-      default: "'Inter', 'Helvetica Neue', sans-serif",
-      mono: "'JetBrains Mono', 'Courier New', monospace",
-      rounded: "'Nunito', 'Arial Rounded MT Bold', sans-serif",
+      default: "'Inter', var(--font-inter), sans-serif",
+      mono: "'JetBrains Mono', var(--font-mono), monospace",
+      rounded: "'Nunito', var(--font-rounded), sans-serif",
+      serif: "'Playfair Display', var(--font-serif), Georgia, serif",
+      modern: "'Outfit', var(--font-modern), sans-serif",
+      compact: "'Plus Jakarta Sans', var(--font-compact), sans-serif",
     };
     root.style.setProperty('--font-family', fontMap[settings.fontFamily] ?? fontMap.default);
   }, [settings]);

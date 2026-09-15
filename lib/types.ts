@@ -10,9 +10,19 @@ export type MemoryOption =
   | '512 GB'
   | '1 TB';
 
-export type FontFamily = 'default' | 'mono' | 'rounded';
-export type ColorTheme = 'blue' | 'green' | 'purple' | 'orange' | 'rose';
-export type AppTheme = 'dark' | 'light' | 'sepia';
+export type FontFamily = 'default' | 'mono' | 'rounded' | 'serif' | 'modern' | 'compact';
+export type ColorTheme =
+  | 'blue'
+  | 'green'
+  | 'purple'
+  | 'orange'
+  | 'rose'
+  | 'amber'
+  | 'emerald'
+  | 'cyan'
+  | 'indigo'
+  | 'crimson';
+export type AppTheme = 'dark' | 'light';
 
 export interface Product {
   id: string;

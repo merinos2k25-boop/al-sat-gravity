@@ -13,7 +13,7 @@ interface BottomNavProps {
 interface TabItem {
   id: TabId;
   label: string;
-  icon: React.ComponentType<{ size?: number; className?: string; strokeWidth?: number }>;
+  icon: React.ComponentType<{ size?: number; className?: string; strokeWidth?: number; style?: React.CSSProperties }>;
 }
 
 const tabs: TabItem[] = [
@@ -96,12 +96,15 @@ export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
         onPointerCancel={onPointerUp}
         className="pointer-events-auto relative w-full max-w-sm h-16 rounded-full px-1.5 py-1 flex items-center bg-black/75 dark:bg-[#0c0e14]/85 backdrop-blur-2xl border border-white/20 select-none cursor-pointer touch-none shadow-[0_20px_45px_-10px_rgba(0,0,0,0.7),inset_0_1px_1px_0_rgba(255,255,255,0.28)]"
       >
-        {/* Sekmeler Arasında Pürüzsüzce Kayan iOS 26 Glass Kapsül Hapı */}
+        {/* Sekmeler Arasında Pürüzsüzce Kayan iOS 26 Glass Kapsül Hapı (Seçili Tema Renginde Parlar) */}
         <div
-          className="absolute top-1.5 bottom-1.5 rounded-full bg-white/22 dark:bg-white/18 backdrop-blur-xl border border-white/30 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_4px_15px_rgba(0,0,0,0.3)] transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none"
+          className="absolute top-1.5 bottom-1.5 rounded-full backdrop-blur-xl border transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none"
           style={{
             width: `calc((100% - 12px) / ${tabs.length})`,
             transform: `translate3d(calc(${activeIndex} * 100%), 0, 0)`,
+            backgroundColor: 'hsl(var(--primary-hsl) / 0.22)',
+            borderColor: 'hsl(var(--primary-hsl) / 0.55)',
+            boxShadow: '0 0 22px hsl(var(--primary-hsl) / 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.35)',
           }}
         />
 
@@ -122,11 +125,17 @@ export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
               <div className="flex flex-col items-center justify-center pointer-events-none">
                 <Icon
                   size={22}
-                  strokeWidth={active ? 2.4 : 1.9}
-                  className={`transition-all duration-300 ${
+                  strokeWidth={active ? 2.5 : 1.9}
+                  style={
                     active
-                      ? 'text-white scale-110 drop-shadow-[0_2px_8px_rgba(255,255,255,0.5)]'
-                      : 'text-white/50 group-hover:text-white/80'
+                      ? {
+                          color: 'hsl(var(--primary-hsl))',
+                          filter: 'drop-shadow(0 0 8px hsl(var(--primary-hsl) / 0.9))',
+                        }
+                      : undefined
+                  }
+                  className={`transition-all duration-300 ${
+                    active ? 'scale-115' : 'text-white/50 group-hover:text-white/80'
                   }`}
                 />
               </div>

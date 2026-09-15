@@ -63,12 +63,20 @@ export default function SettingsTab() {
     { id: 'purple', label: 'Mor', color: '#a855f7' },
     { id: 'orange', label: 'Turuncu', color: '#f97316' },
     { id: 'rose', label: 'Pembe', color: '#f43f5e' },
+    { id: 'amber', label: 'Kehribar', color: '#f59e0b' },
+    { id: 'emerald', label: 'Zümrüt', color: '#10b981' },
+    { id: 'cyan', label: 'Turkuaz', color: '#06b6d4' },
+    { id: 'indigo', label: 'İndigo', color: '#6366f1' },
+    { id: 'crimson', label: 'Kırmızı', color: '#e11d48' },
   ];
 
-  const fonts: { id: FontFamily; label: string; preview: string }[] = [
-    { id: 'default', label: 'Varsayılan', preview: 'Aa' },
-    { id: 'mono', label: 'Mono', preview: 'Aa' },
-    { id: 'rounded', label: 'Yuvarlak', preview: 'Aa' },
+  const fonts: { id: FontFamily; label: string; preview: string; fontStyle: string }[] = [
+    { id: 'default', label: 'Standart', preview: 'Aa', fontStyle: 'var(--font-inter), sans-serif' },
+    { id: 'mono', label: 'Kod / Mono', preview: 'Aa', fontStyle: 'var(--font-mono), monospace' },
+    { id: 'rounded', label: 'Yuvarlak', preview: 'Aa', fontStyle: 'var(--font-rounded), sans-serif' },
+    { id: 'serif', label: 'Klasik Serif', preview: 'Aa', fontStyle: 'var(--font-serif), serif' },
+    { id: 'modern', label: 'Geometrik', preview: 'Aa', fontStyle: 'var(--font-modern), sans-serif' },
+    { id: 'compact', label: 'Kompakt', preview: 'Aa', fontStyle: 'var(--font-compact), sans-serif' },
   ];
 
   return (
@@ -80,48 +88,47 @@ export default function SettingsTab() {
 
       {/* Theme */}
       <Section icon={<Moon size={16} />} title="Görünüm Teması" defaultOpen>
-        <div className="grid grid-cols-3 gap-2.5">
+        <div className="flex gap-3">
           {([
-            { id: 'dark' as AppTheme, label: 'Koyu Mod', icon: Moon, desc: 'Gece' },
-            { id: 'light' as AppTheme, label: 'Açık Mod', icon: Sun, desc: 'Gündüz' },
-            { id: 'sepia' as AppTheme, label: 'Sarı Mod', icon: Palette, desc: 'Saman / Göz Yormaz' },
+            { id: 'dark' as AppTheme, label: 'Koyu Mod', icon: Moon, desc: 'Karanlık & Şık' },
+            { id: 'light' as AppTheme, label: 'Açık Mod', icon: Sun, desc: 'Ferah & Net Siyah' },
           ]).map(({ id, label, icon: Icon, desc }) => (
             <button
               key={id}
               onClick={() => updateSettings({ theme: id })}
-              className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl border transition-all ${
+              className={`flex-1 flex flex-col items-center gap-1.5 py-3 px-3 rounded-xl border transition-all ${
                 settings.theme === id
                   ? 'border-primary bg-primary/15 text-primary shadow-sm font-semibold'
                   : 'border-white/10 bg-white/5 text-white/60 hover:text-white/90'
               }`}
             >
-              <Icon size={20} />
+              <Icon size={22} />
               <span className="text-xs">{label}</span>
-              <span className="text-[9px] opacity-60 text-center leading-tight">{desc}</span>
+              <span className="text-[10px] opacity-60 text-center">{desc}</span>
             </button>
           ))}
         </div>
       </Section>
 
       {/* Color theme */}
-      <Section icon={<Palette size={16} />} title="Renk Teması">
-        <div className="flex gap-2 flex-wrap">
+      <Section icon={<Palette size={16} />} title="Renk Teması" defaultOpen>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {themes.map(({ id, label, color }) => (
             <button
               key={id}
               onClick={() => updateSettings({ colorTheme: id })}
-              className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-medium transition ${
+              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border text-xs font-medium transition-all ${
                 settings.colorTheme === id
-                  ? 'border-white/30 bg-white/10'
-                  : 'border-white/10 bg-white/5 text-white/50'
+                  ? 'border-primary bg-primary/15 text-primary shadow-sm font-semibold'
+                  : 'border-white/10 bg-white/5 text-white/60 hover:text-white/90'
               }`}
             >
               <span
-                className="w-4 h-4 rounded-full inline-block"
+                className="w-4 h-4 rounded-full inline-block shrink-0 shadow-sm"
                 style={{ backgroundColor: color }}
               />
-              {label}
-              {settings.colorTheme === id && <Check size={11} />}
+              <span className="truncate">{label}</span>
+              {settings.colorTheme === id && <Check size={13} className="ml-auto text-primary shrink-0" />}
             </button>
           ))}
         </div>
@@ -129,27 +136,20 @@ export default function SettingsTab() {
 
       {/* Font */}
       <Section icon={<Type size={16} />} title="Yazı Stili">
-        <div className="flex gap-2">
-          {fonts.map(({ id, label, preview }) => (
+        <div className="grid grid-cols-3 gap-2">
+          {fonts.map(({ id, label, preview, fontStyle }) => (
             <button
               key={id}
               onClick={() => updateSettings({ fontFamily: id })}
-              className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-xl border transition ${
+              className={`flex flex-col items-center gap-1 py-3 px-2 rounded-xl border transition-all ${
                 settings.fontFamily === id
-                  ? 'border-primary bg-primary/10 text-primary'
-                  : 'border-white/10 bg-white/5 text-white/50'
+                  ? 'border-primary bg-primary/15 text-primary shadow-sm font-semibold'
+                  : 'border-white/10 bg-white/5 text-white/60 hover:text-white/90'
               }`}
-              style={{
-                fontFamily:
-                  id === 'mono'
-                    ? 'monospace'
-                    : id === 'rounded'
-                    ? 'sans-serif'
-                    : 'sans-serif',
-              }}
+              style={{ fontFamily: fontStyle }}
             >
-              <span className="text-lg font-bold">{preview}</span>
-              <span className="text-[10px]">{label}</span>
+              <span className="text-xl font-bold">{preview}</span>
+              <span className="text-[10px] truncate text-center">{label}</span>
             </button>
           ))}
         </div>
