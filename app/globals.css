@@ -4,7 +4,7 @@
 @theme inline {
   --color-primary: hsl(var(--primary-hsl, 221 83% 53%));
   --color-background: var(--bg-background, #0f1117);
-  --color-surface: var(--bg-surface, #1a1d27);
+  --color-surface: var(--bg-surface, #1e2235);
   --color-foreground: var(--text-foreground, #f1f5f9);
 }
 
@@ -14,21 +14,28 @@
   --font-family: var(--font-inter), 'Helvetica Neue', sans-serif;
 }
 
-/* ===== Dark Mode (default) ===== */
+/* ===== 1. KOYU MOD (Dark) ===== */
 .dark {
   --bg-background: #0f1117;
   --bg-surface: #1e2235;
   --text-foreground: #f1f5f9;
 }
 
-/* ===== Light Mode ===== */
-:root:not(.dark) {
-  --bg-background: #f1f5fb;
+/* ===== 2. AÇIK MOD (Light) ===== */
+.light {
+  --bg-background: #f4f6fa;
   --bg-surface: #ffffff;
-  --text-foreground: #0f172a;
+  --text-foreground: #090d16;
 }
 
-/* ===== Base ===== */
+/* ===== 3. SARI / SAMAN MODU (Warm Straw / Sepia) ===== */
+.sepia {
+  --bg-background: #f4eedb; /* Göz almayan doğal saman sarısı */
+  --bg-surface: #e8dfc7;    /* Saman kağıt kart yüzeyi */
+  --text-foreground: #2b2316; /* Yumuşak koyu kahve/siyah metin */
+}
+
+/* ===== Base Styles ===== */
 html {
   font-family: var(--font-family);
 }
@@ -41,12 +48,10 @@ body {
   overscroll-behavior: none;
 }
 
-/* ===== Safe area for bottom nav — capped to avoid excessive spacing ===== */
 .safe-area-bottom {
   padding-bottom: max(env(safe-area-inset-bottom, 4px), 4px);
 }
 
-/* ===== Scrollbar (minimal) ===== */
 ::-webkit-scrollbar {
   width: 4px;
   height: 4px;
@@ -55,37 +60,82 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(150, 150, 150, 0.2);
   border-radius: 2px;
 }
 
-/* ===== Selection ===== */
 ::selection {
   background: hsl(var(--primary-hsl) / 0.3);
 }
 
-/* ===== Input date picker ===== */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.6);
+/* ===== Date Input Indicator ===== */
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.7);
   cursor: pointer;
 }
-:root:not(.dark) input[type="date"]::-webkit-calendar-picker-indicator {
+.light input[type="date"]::-webkit-calendar-picker-indicator,
+.sepia input[type="date"]::-webkit-calendar-picker-indicator {
   filter: none;
+  cursor: pointer;
 }
 
-/* ===== Light mode overrides ===== */
-:root:not(.dark) .text-white\/80 { color: rgba(15,23,42,0.85) !important; }
-:root:not(.dark) .text-white\/70 { color: rgba(15,23,42,0.75) !important; }
-:root:not(.dark) .text-white\/60 { color: rgba(15,23,42,0.65) !important; }
-:root:not(.dark) .text-white\/50 { color: rgba(15,23,42,0.55) !important; }
-:root:not(.dark) .text-white\/40 { color: rgba(15,23,42,0.45) !important; }
-:root:not(.dark) .text-white\/30 { color: rgba(15,23,42,0.35) !important; }
-:root:not(.dark) .bg-white\/5  { background-color: rgba(0,0,0,0.05) !important; }
-:root:not(.dark) .bg-white\/10 { background-color: rgba(0,0,0,0.08) !important; }
-:root:not(.dark) .border-white\/10 { border-color: rgba(0,0,0,0.12) !important; }
-:root:not(.dark) .border-white\/30 { border-color: rgba(0,0,0,0.22) !important; }
+/* =========================================================
+   AÇIK MOD (LIGHT) VE SARI MOD (SEPIA) İÇİN YAZI & ARKA PLAN DÜZELTMELERİ
+   (Tüm beyaz yazılar net siyah/koyu renge dönüştürülür)
+   ========================================================= */
 
-/* ===== Light mode modal ===== */
-:root:not(.dark) .modal-bg {
-  background-color: #ffffff !important;
+/* Açık Mod - Beyaz Yazıları Tam Siyah Yapma */
+.light .text-white { color: #090d16 !important; }
+.light .text-white\/90 { color: rgba(9, 13, 22, 0.9) !important; }
+.light .text-white\/80 { color: rgba(9, 13, 22, 0.82) !important; }
+.light .text-white\/70 { color: rgba(9, 13, 22, 0.72) !important; }
+.light .text-white\/60 { color: rgba(9, 13, 22, 0.64) !important; }
+.light .text-white\/50 { color: rgba(9, 13, 22, 0.54) !important; }
+.light .text-white\/40 { color: rgba(9, 13, 22, 0.44) !important; }
+.light .text-white\/30 { color: rgba(9, 13, 22, 0.36) !important; }
+.light .placeholder\:text-white\/40::placeholder,
+.light .placeholder\:text-white\/30::placeholder { color: rgba(9, 13, 22, 0.42) !important; }
+
+.light .bg-white\/5  { background-color: rgba(9, 13, 22, 0.05) !important; }
+.light .bg-white\/10 { background-color: rgba(9, 13, 22, 0.08) !important; }
+.light .bg-white\/15 { background-color: rgba(9, 13, 22, 0.12) !important; }
+.light .bg-white\/20 { background-color: rgba(9, 13, 22, 0.16) !important; }
+.light .border-white\/10 { border-color: rgba(9, 13, 22, 0.12) !important; }
+.light .border-white\/15 { border-color: rgba(9, 13, 22, 0.16) !important; }
+.light .border-white\/20 { border-color: rgba(9, 13, 22, 0.2) !important; }
+.light .border-white\/25 { border-color: rgba(9, 13, 22, 0.25) !important; }
+.light .border-white\/30 { border-color: rgba(9, 13, 22, 0.3) !important; }
+
+/* Sarı / Saman Modu - Yumuşak Göz Yormayan Koyu Kahve/Siyah */
+.sepia .text-white { color: #2b2316 !important; }
+.sepia .text-white\/90 { color: rgba(43, 35, 22, 0.9) !important; }
+.sepia .text-white\/80 { color: rgba(43, 35, 22, 0.82) !important; }
+.sepia .text-white\/70 { color: rgba(43, 35, 22, 0.72) !important; }
+.sepia .text-white\/60 { color: rgba(43, 35, 22, 0.64) !important; }
+.sepia .text-white\/50 { color: rgba(43, 35, 22, 0.54) !important; }
+.sepia .text-white\/40 { color: rgba(43, 35, 22, 0.44) !important; }
+.sepia .text-white\/30 { color: rgba(43, 35, 22, 0.36) !important; }
+.sepia .placeholder\:text-white\/40::placeholder,
+.sepia .placeholder\:text-white\/30::placeholder { color: rgba(43, 35, 22, 0.42) !important; }
+
+.sepia .bg-white\/5  { background-color: rgba(43, 35, 22, 0.05) !important; }
+.sepia .bg-white\/10 { background-color: rgba(43, 35, 22, 0.08) !important; }
+.sepia .bg-white\/15 { background-color: rgba(43, 35, 22, 0.12) !important; }
+.sepia .bg-white\/20 { background-color: rgba(43, 35, 22, 0.16) !important; }
+.sepia .border-white\/10 { border-color: rgba(43, 35, 22, 0.12) !important; }
+.sepia .border-white\/15 { border-color: rgba(43, 35, 22, 0.16) !important; }
+.sepia .border-white\/20 { border-color: rgba(43, 35, 22, 0.2) !important; }
+.sepia .border-white\/25 { border-color: rgba(43, 35, 22, 0.25) !important; }
+.sepia .border-white\/30 { border-color: rgba(43, 35, 22, 0.3) !important; }
+
+/* Buton ve rozet içindeki beyaz yazıların korunması (Primary ve Renkli butonlar) */
+.light button.bg-primary,
+.light .bg-primary .text-white,
+.light button.bg-green-500,
+.light button.bg-red-500,
+.sepia button.bg-primary,
+.sepia .bg-primary .text-white,
+.sepia button.bg-green-500,
+.sepia button.bg-red-500 {
+  color: #ffffff !important;
 }

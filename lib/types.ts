@@ -12,7 +12,7 @@ export type MemoryOption =
 
 export type FontFamily = 'default' | 'mono' | 'rounded';
 export type ColorTheme = 'blue' | 'green' | 'purple' | 'orange' | 'rose';
-export type AppTheme = 'dark' | 'light';
+export type AppTheme = 'dark' | 'light' | 'sepia';
 
 export interface Product {
   id: string;

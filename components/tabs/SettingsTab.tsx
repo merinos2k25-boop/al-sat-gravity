@@ -79,20 +79,25 @@ export default function SettingsTab() {
       </div>
 
       {/* Theme */}
-      <Section icon={<Moon size={16} />} title="Tema" defaultOpen>
-        <div className="flex gap-3">
-          {(['dark', 'light'] as AppTheme[]).map((t) => (
+      <Section icon={<Moon size={16} />} title="Görünüm Teması" defaultOpen>
+        <div className="grid grid-cols-3 gap-2.5">
+          {([
+            { id: 'dark' as AppTheme, label: 'Koyu Mod', icon: Moon, desc: 'Gece' },
+            { id: 'light' as AppTheme, label: 'Açık Mod', icon: Sun, desc: 'Gündüz' },
+            { id: 'sepia' as AppTheme, label: 'Sarı Mod', icon: Palette, desc: 'Saman / Göz Yormaz' },
+          ]).map(({ id, label, icon: Icon, desc }) => (
             <button
-              key={t}
-              onClick={() => updateSettings({ theme: t })}
-              className={`flex-1 flex flex-col items-center gap-2 py-3 rounded-xl border transition ${
-                settings.theme === t
-                  ? 'border-primary bg-primary/10 text-primary'
-                  : 'border-white/10 bg-white/5 text-white/50'
+              key={id}
+              onClick={() => updateSettings({ theme: id })}
+              className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl border transition-all ${
+                settings.theme === id
+                  ? 'border-primary bg-primary/15 text-primary shadow-sm font-semibold'
+                  : 'border-white/10 bg-white/5 text-white/60 hover:text-white/90'
               }`}
             >
-              {t === 'dark' ? <Moon size={20} /> : <Sun size={20} />}
-              <span className="text-xs font-medium">{t === 'dark' ? 'Koyu' : 'Açık'}</span>
+              <Icon size={20} />
+              <span className="text-xs">{label}</span>
+              <span className="text-[9px] opacity-60 text-center leading-tight">{desc}</span>
             </button>
           ))}
         </div>

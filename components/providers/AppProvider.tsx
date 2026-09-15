@@ -43,7 +43,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Apply theme & font to document
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.toggle('dark', settings.theme === 'dark');
+    root.classList.remove('dark', 'light', 'sepia');
+    root.classList.add(settings.theme || 'dark');
 
     const colorMap: Record<string, string> = {
       blue: '221 83% 53%',

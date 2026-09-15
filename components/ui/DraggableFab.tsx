@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Plus } from 'lucide-react';
 
 interface DraggableFabProps {
@@ -10,14 +10,13 @@ interface DraggableFabProps {
 }
 
 export default function DraggableFab({ onClick, color = 'primary', ariaLabel }: DraggableFabProps) {
+  // Bırakılan son koordinat (nerede bırakılırsa orada kalır)
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef<{ startX: number; startY: number; initialX: number; initialY: number } | null>(null);
   const isDragMovedRef = useRef(false);
 
-  // Pointer / Touch olayları
   const handlePointerDown = (e: React.PointerEvent) => {
-    // Sadece sol tık veya tek dokunuş
     if (e.button !== 0 && e.pointerType === 'mouse') return;
 
     dragStartRef.current = {
@@ -29,8 +28,11 @@ export default function DraggableFab({ onClick, color = 'primary', ariaLabel }: 
     isDragMovedRef.current = false;
     setIsDragging(true);
 
-    // Pointer capture ile parmak/fare ekranın dışına çıksa bile takip etsin
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {
+      // ignore
+    }
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
@@ -39,14 +41,17 @@ export default function DraggableFab({ onClick, color = 'primary', ariaLabel }: 
     const deltaX = e.clientX - dragStartRef.current.startX;
     const deltaY = e.clientY - dragStartRef.current.startY;
 
-    // Eğer 5 pikselden fazla hareket ettiyse sürükleme olarak kabul et
-    if (Math.hypot(deltaX, deltaY) > 5) {
+    if (Math.hypot(deltaX, deltaY) > 6) {
       isDragMovedRef.current = true;
     }
 
+    // Ekran sınırları içinde serbest sürükleme
+    const nextX = dragStartRef.current.initialX + deltaX;
+    const nextY = dragStartRef.current.initialY + deltaY;
+
     setPosition({
-      x: dragStartRef.current.initialX + deltaX,
-      y: dragStartRef.current.initialY + deltaY,
+      x: nextX,
+      y: nextY,
     });
   };
 
@@ -54,7 +59,7 @@ export default function DraggableFab({ onClick, color = 'primary', ariaLabel }: 
     if (!dragStartRef.current) return;
 
     try {
-      (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
     } catch {
       // ignore
     }
@@ -62,10 +67,9 @@ export default function DraggableFab({ onClick, color = 'primary', ariaLabel }: 
     setIsDragging(false);
     dragStartRef.current = null;
 
-    // Serbest bırakınca elastik yay gibi orijinal konumuna (0, 0) dön
-    setPosition({ x: 0, y: 0 });
+    // ÖNEMLİ: Sıfırlama yapılmaz! Bırakıldığı yerde kalır (nerede bıraktıysan orada durur).
 
-    // Eğer hiç sürüklenmediyse tıklama işlemini tetikle
+    // Eğer hiç sürüklenmediyse tıklama işlemini tetikle (formu aç)
     if (!isDragMovedRef.current) {
       onClick();
     }
@@ -73,8 +77,8 @@ export default function DraggableFab({ onClick, color = 'primary', ariaLabel }: 
 
   const colorStyles =
     color === 'green'
-      ? 'bg-gradient-to-tr from-emerald-600 to-green-400 text-white shadow-[0_12px_30px_rgba(34,197,94,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] border border-green-300/30'
-      : 'bg-gradient-to-tr from-blue-600 to-indigo-400 text-white shadow-[0_12px_30px_rgba(59,130,246,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] border border-blue-300/30';
+      ? 'bg-gradient-to-tr from-emerald-600 to-green-500 text-white shadow-[0_12px_30px_rgba(34,197,94,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] border border-green-300/30'
+      : 'bg-gradient-to-tr from-blue-600 to-indigo-500 text-white shadow-[0_12px_30px_rgba(59,130,246,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] border border-blue-300/30';
 
   return (
     <div
@@ -84,7 +88,7 @@ export default function DraggableFab({ onClick, color = 'primary', ariaLabel }: 
       onPointerCancel={handlePointerUp}
       style={{
         transform: `translate3d(${position.x}px, ${position.y}px, 0) scale(${isDragging ? 1.12 : 1})`,
-        transition: isDragging ? 'none' : 'transform 0.55s cubic-bezier(0.19, 1, 0.22, 1)',
+        transition: isDragging ? 'none' : 'transform 0.15s ease-out',
         touchAction: 'none',
       }}
       className={`fixed bottom-28 right-6 z-40 w-14 h-14 rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing select-none backdrop-blur-md ${colorStyles}`}

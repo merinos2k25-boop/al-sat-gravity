@@ -74,7 +74,7 @@ export default function ProductForm({ onClose, editProduct, defaultType = 'purch
   };
 
   const inputCls =
-    'w-full rounded-xl bg-white/10 border border-white/20 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/60 placeholder:text-white/40';
+    'w-full rounded-xl bg-white/10 border border-white/20 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/60 placeholder:text-white/40 text-foreground';
   const labelCls = 'block text-xs font-medium text-white/60 mb-1';
   const errCls = 'text-red-400 text-xs mt-1';
 
