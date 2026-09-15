@@ -43,7 +43,7 @@ export interface Product {
 export interface AppSettings {
   theme: AppTheme;
   colorTheme: ColorTheme;
-  fontFamily: FontFamily;
+  fontFamily?: string;
 }
 
 export interface AppData {

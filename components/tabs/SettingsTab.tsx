@@ -2,10 +2,10 @@
 
 import React, { useRef, useState } from 'react';
 import { useApp } from '@/components/providers/AppProvider';
-import { AppTheme, ColorTheme, FontFamily } from '@/lib/types';
+import { AppTheme, ColorTheme } from '@/lib/types';
 import {
-  Moon, Sun, Palette, Type, Download, Upload, Info, ChevronDown, ChevronUp,
-  Trash2, Check
+  Moon, Sun, Palette, Download, Upload, Info, ChevronDown, ChevronUp,
+  Trash2, Check, FileSpreadsheet
 } from 'lucide-react';
 
 interface SectionProps {
@@ -53,11 +53,10 @@ function Section({ icon, title, children, defaultOpen = false, storageKey }: Sec
 }
 
 export default function SettingsTab() {
-  const { settings, updateSettings, exportJSON, importJSON } = useApp();
+  const { settings, updateSettings, exportJSON, exportExcel, importJSON } = useApp();
   const fileRef = useRef<HTMLInputElement>(null);
   const [importMsg, setImportMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [confirmClear, setConfirmClear] = useState(false);
-  const [cleared, setCleared] = useState(false);
 
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -87,15 +86,6 @@ export default function SettingsTab() {
     { id: 'cyan', label: 'Turkuaz', color: '#06b6d4' },
     { id: 'indigo', label: 'İndigo', color: '#6366f1' },
     { id: 'crimson', label: 'Kırmızı', color: '#e11d48' },
-  ];
-
-  const fonts: { id: FontFamily; label: string; preview: string; fontStyle: string }[] = [
-    { id: 'default', label: 'Standart', preview: 'Aa', fontStyle: 'var(--font-inter), sans-serif' },
-    { id: 'mono', label: 'Kod / Mono', preview: 'Aa', fontStyle: 'var(--font-mono), monospace' },
-    { id: 'rounded', label: 'Yuvarlak', preview: 'Aa', fontStyle: 'var(--font-rounded), sans-serif' },
-    { id: 'serif', label: 'Klasik Serif', preview: 'Aa', fontStyle: 'var(--font-serif), serif' },
-    { id: 'modern', label: 'Geometrik', preview: 'Aa', fontStyle: 'var(--font-modern), sans-serif' },
-    { id: 'compact', label: 'Kompakt', preview: 'Aa', fontStyle: 'var(--font-compact), sans-serif' },
   ];
 
   return (
@@ -143,7 +133,7 @@ export default function SettingsTab() {
               }`}
             >
               <span
-                className="w-4 h-4 rounded-full inline-block shrink-0 shadow-sm border border-white/20"
+                className="w-4 h-4 rounded-full inline-block shrink-0 shadow-sm border border-white/30"
                 style={{ backgroundColor: color }}
               />
               <span className="truncate">{label}</span>
@@ -153,49 +143,42 @@ export default function SettingsTab() {
         </div>
       </Section>
 
-      {/* Font */}
-      <Section icon={<Type size={16} />} title="Yazı Stili" storageKey="font">
-        <div className="grid grid-cols-3 gap-2">
-          {fonts.map(({ id, label, preview, fontStyle }) => (
-            <button
-              key={id}
-              onClick={() => updateSettings({ fontFamily: id })}
-              className={`flex flex-col items-center gap-1 py-3 px-2 rounded-xl border transition-all ${
-                settings.fontFamily === id
-                  ? 'border-primary bg-primary/15 text-primary shadow-sm font-semibold'
-                  : 'border-white/10 bg-white/5 text-white/60 hover:text-white/90'
-              }`}
-              style={{ fontFamily: fontStyle }}
-            >
-              <span className="text-xl font-bold">{preview}</span>
-              <span className="text-[10px] truncate text-center">{label}</span>
-            </button>
-          ))}
-        </div>
-      </Section>
-
       {/* Data */}
-      <Section icon={<Download size={16} />} title="Veri Yönetimi" storageKey="data">
+      <Section icon={<Download size={16} />} title="Veri Yönetimi" defaultOpen storageKey="data">
         <div className="space-y-2.5">
+          {/* Excel Export */}
+          <button
+            onClick={exportExcel}
+            className="w-full flex items-center gap-3 py-3 px-4 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-sm font-medium hover:bg-emerald-500/20 transition"
+          >
+            <FileSpreadsheet size={18} className="text-emerald-400 shrink-0" />
+            <div className="text-left">
+              <div className="font-semibold text-emerald-400">Excel ile Dışa Aktar (.xlsx)</div>
+              <div className="text-xs text-emerald-400/70">Derlenmiş Excel tablosu ve özet sayfası olarak indir</div>
+            </div>
+          </button>
+
+          {/* JSON Export */}
           <button
             onClick={exportJSON}
             className="w-full flex items-center gap-3 py-3 px-4 rounded-xl bg-primary/10 border border-primary/20 text-primary text-sm font-medium hover:bg-primary/20 transition"
           >
-            <Download size={16} />
+            <Download size={18} className="shrink-0" />
             <div className="text-left">
-              <div className="font-semibold">JSON Dışa Aktar</div>
-              <div className="text-xs text-primary/70">Tüm verilerini indir</div>
+              <div className="font-semibold">JSON Yedek İndir</div>
+              <div className="text-xs text-primary/70">Tüm verilerini JSON formatında yedekle</div>
             </div>
           </button>
 
+          {/* JSON Import */}
           <button
             onClick={() => fileRef.current?.click()}
             className="w-full flex items-center gap-3 py-3 px-4 rounded-xl bg-white/5 border border-white/10 text-sm font-medium hover:bg-white/10 transition"
           >
-            <Upload size={16} />
+            <Upload size={18} className="shrink-0" />
             <div className="text-left">
-              <div className="font-semibold">JSON İçe Aktar</div>
-              <div className="text-xs text-white/40">Daha önce dışa aktarılan dosyayı yükle</div>
+              <div className="font-semibold">JSON Yedek Yükle</div>
+              <div className="text-xs text-white/40">Daha önce kaydedilen JSON yedeğini geri yükle</div>
             </div>
           </button>
           <input
@@ -225,10 +208,10 @@ export default function SettingsTab() {
                 onClick={() => setConfirmClear(true)}
                 className="w-full flex items-center gap-3 py-3 px-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium hover:bg-red-500/20 transition"
               >
-                <Trash2 size={16} />
+                <Trash2 size={18} className="shrink-0" />
                 <div className="text-left">
-                  <div className="font-semibold">Tüm Verileri Sil</div>
-                  <div className="text-xs text-red-400/60">Bu işlem geri alınamaz</div>
+                  <div className="font-semibold">Tüm Verileri Sıfırla</div>
+                  <div className="text-xs text-red-400/60">Kayıtlı tüm ürünleri ve ayarları sil</div>
                 </div>
               </button>
             ) : (

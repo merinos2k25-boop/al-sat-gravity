@@ -12,6 +12,7 @@ import {
   deleteProduct as storeDeleteProduct,
   calculateSummary,
   exportData,
+  exportExcel as storeExportExcel,
   importData,
   defaultSettings,
 } from '@/lib/store';
@@ -25,6 +26,7 @@ interface AppContextType {
   deleteProduct: (id: string) => void;
   updateSettings: (updates: Partial<AppSettings>) => void;
   exportJSON: () => void;
+  exportExcel: () => void;
   importJSON: (file: File) => Promise<{ success: boolean; message: string }>;
 }
 
@@ -40,11 +42,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setSettings(s);
   }, []);
 
-  // Apply theme & font to document
+  // Apply theme to document
   useEffect(() => {
     const root = document.documentElement;
     const isLight = settings.theme === 'light';
-    root.classList.remove('dark', 'light', 'sepia');
+    root.classList.remove('dark', 'light');
     root.classList.add(isLight ? 'light' : 'dark');
     root.classList.toggle('color-theme-white', settings.colorTheme === 'white');
 
@@ -59,24 +61,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       cyan: '189 94% 43%',
       indigo: '239 84% 67%',
       crimson: '350 89% 50%',
-      white: isLight ? '0 0% 12%' : '0 0% 98%', // Beyaz tema: koyu modda bembeyaz, açık modda kontrast monokrom
+      white: isLight ? '0 0% 12%' : '0 0% 98%',
     };
     root.style.setProperty('--primary-hsl', colorMap[settings.colorTheme] ?? colorMap.blue);
-
-    const fontMap: Record<string, string> = {
-      default: "var(--font-inter), 'Inter', -apple-system, sans-serif",
-      mono: "var(--font-mono), 'JetBrains Mono', monospace",
-      rounded: "var(--font-rounded), 'Nunito', sans-serif",
-      serif: "var(--font-serif), 'Playfair Display', Georgia, serif",
-      modern: "var(--font-modern), 'Outfit', sans-serif",
-      compact: "var(--font-compact), 'Plus Jakarta Sans', sans-serif",
-    };
-    const activeFont = fontMap[settings.fontFamily] ?? fontMap.default;
-    root.style.setProperty('--font-family', activeFont);
-    root.style.fontFamily = activeFont;
-    if (typeof document !== 'undefined' && document.body) {
-      document.body.style.fontFamily = activeFont;
-    }
   }, [settings]);
 
   const summary = calculateSummary(products);
@@ -115,6 +102,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     URL.revokeObjectURL(url);
   }, []);
 
+  const exportExcel = useCallback(() => {
+    storeExportExcel();
+  }, []);
+
   const importJSON = useCallback(async (file: File): Promise<{ success: boolean; message: string }> => {
     return new Promise((resolve) => {
       const reader = new FileReader();
@@ -144,6 +135,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         deleteProduct,
         updateSettings,
         exportJSON,
+        exportExcel,
         importJSON,
       }}
     >

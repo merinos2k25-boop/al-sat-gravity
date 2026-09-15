@@ -2,6 +2,7 @@
 
 import React, { useRef, useState } from 'react';
 import { Home, ShoppingCart, TrendingUp, BarChart3, Settings } from 'lucide-react';
+import { useApp } from '@/components/providers/AppProvider';
 
 export type TabId = 'home' | 'purchase' | 'sales' | 'summary' | 'settings';
 
@@ -25,6 +26,8 @@ const tabs: TabItem[] = [
 ];
 
 export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
+  const { settings } = useApp();
+  const isWhiteTheme = settings.colorTheme === 'white';
   const activeIndex = tabs.findIndex((t) => t.id === activeTab);
   const navRef = useRef<HTMLElement>(null);
   const isDraggingRef = useRef(false);
@@ -94,7 +97,7 @@ export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
-        className="pointer-events-auto relative w-full max-w-sm h-16 rounded-full px-1.5 py-1 flex items-center bg-black/75 dark:bg-[#0c0e14]/85 backdrop-blur-2xl border border-white/20 select-none cursor-pointer touch-none shadow-[0_20px_45px_-10px_rgba(0,0,0,0.7),inset_0_1px_1px_0_rgba(255,255,255,0.28)]"
+        className="pointer-events-auto relative w-full max-w-sm h-16 rounded-full px-1.5 py-1 flex items-center bg-black/80 dark:bg-[#0c0e14]/85 backdrop-blur-2xl border border-white/20 select-none cursor-pointer touch-none shadow-[0_20px_45px_-10px_rgba(0,0,0,0.7),inset_0_1px_1px_0_rgba(255,255,255,0.28)]"
       >
         {/* Sekmeler Arasında Pürüzsüzce Kayan iOS 26 Glass Kapsül Hapı (Seçili Tema Renginde Parlar) */}
         <div
@@ -102,9 +105,11 @@ export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
           style={{
             width: `calc((100% - 12px) / ${tabs.length})`,
             transform: `translate3d(calc(${activeIndex} * 100%), 0, 0)`,
-            backgroundColor: 'hsl(var(--primary-hsl) / 0.22)',
-            borderColor: 'hsl(var(--primary-hsl) / 0.55)',
-            boxShadow: '0 0 22px hsl(var(--primary-hsl) / 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.35)',
+            backgroundColor: isWhiteTheme ? 'rgba(255, 255, 255, 0.25)' : 'hsl(var(--primary-hsl) / 0.22)',
+            borderColor: isWhiteTheme ? 'rgba(255, 255, 255, 0.7)' : 'hsl(var(--primary-hsl) / 0.55)',
+            boxShadow: isWhiteTheme
+              ? '0 0 25px rgba(255, 255, 255, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.6)'
+              : '0 0 22px hsl(var(--primary-hsl) / 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.35)',
           }}
         />
 
@@ -129,13 +134,15 @@ export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
                   style={
                     active
                       ? {
-                          color: 'hsl(var(--primary-hsl))',
-                          filter: 'drop-shadow(0 0 8px hsl(var(--primary-hsl) / 0.9))',
+                          color: isWhiteTheme ? '#ffffff' : 'hsl(var(--primary-hsl))',
+                          filter: isWhiteTheme
+                            ? 'drop-shadow(0 0 10px rgba(255, 255, 255, 0.95))'
+                            : 'drop-shadow(0 0 8px hsl(var(--primary-hsl) / 0.9))',
                         }
                       : undefined
                   }
                   className={`transition-all duration-300 ${
-                    active ? 'scale-115' : 'text-white/50 group-hover:text-white/80'
+                    active ? 'scale-115' : 'text-white/60 group-hover:text-white/90'
                   }`}
                 />
               </div>

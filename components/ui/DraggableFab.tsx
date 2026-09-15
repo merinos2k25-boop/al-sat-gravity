@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { Plus } from 'lucide-react';
+import { useApp } from '@/components/providers/AppProvider';
 
 interface DraggableFabProps {
   onClick: () => void;
@@ -10,7 +11,7 @@ interface DraggableFabProps {
 }
 
 export default function DraggableFab({ onClick, color = 'primary', ariaLabel }: DraggableFabProps) {
-  // Bırakılan son koordinat (nerede bırakılırsa orada kalır)
+  const { settings } = useApp();
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef<{ startX: number; startY: number; initialX: number; initialY: number } | null>(null);
@@ -45,7 +46,6 @@ export default function DraggableFab({ onClick, color = 'primary', ariaLabel }: 
       isDragMovedRef.current = true;
     }
 
-    // Ekran sınırları içinde serbest sürükleme
     const nextX = dragStartRef.current.initialX + deltaX;
     const nextY = dragStartRef.current.initialY + deltaY;
 
@@ -67,18 +67,26 @@ export default function DraggableFab({ onClick, color = 'primary', ariaLabel }: 
     setIsDragging(false);
     dragStartRef.current = null;
 
-    // ÖNEMLİ: Sıfırlama yapılmaz! Bırakıldığı yerde kalır (nerede bıraktıysan orada durur).
-
-    // Eğer hiç sürüklenmediyse tıklama işlemini tetikle (formu aç)
     if (!isDragMovedRef.current) {
       onClick();
     }
   };
 
-  const colorStyles =
-    color === 'green'
-      ? 'bg-gradient-to-tr from-emerald-600 to-green-500 text-white shadow-[0_12px_30px_rgba(34,197,94,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] border border-green-300/30'
-      : 'bg-gradient-to-tr from-blue-600 to-indigo-500 text-white shadow-[0_12px_30px_rgba(59,130,246,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] border border-blue-300/30';
+  const isWhite = settings.colorTheme === 'white';
+  const isLight = settings.theme === 'light';
+
+  let colorStyles = '';
+  if (color === 'green') {
+    colorStyles =
+      'bg-gradient-to-tr from-emerald-600 to-green-500 text-white shadow-[0_12px_30px_rgba(34,197,94,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] border border-green-300/30';
+  } else if (isWhite) {
+    colorStyles = isLight
+      ? 'bg-slate-900 text-white shadow-[0_12px_30px_rgba(0,0,0,0.35),inset_0_1px_1px_rgba(255,255,255,0.3)] border border-slate-700/60'
+      : 'bg-white text-black shadow-[0_12px_30px_rgba(255,255,255,0.35),inset_0_1px_1px_rgba(255,255,255,0.8)] border border-white/60';
+  } else {
+    colorStyles =
+      'bg-primary text-white shadow-[0_12px_30px_hsl(var(--primary-hsl)/0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] border border-white/20';
+  }
 
   return (
     <div
