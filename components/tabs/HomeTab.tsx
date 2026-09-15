@@ -1,34 +1,102 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useApp } from '@/components/providers/AppProvider';
 import ProductCard from '@/components/ui/ProductCard';
-import ProductForm from '@/components/ui/ProductForm';
-import { formatCurrency } from '@/lib/utils';
-import { TrendingUp, Package, DollarSign, Plus, Search, X, Wallet } from 'lucide-react';
+import { Category, Product } from '@/lib/types';
+import { formatCurrency, getCategoryIcon, CATEGORIES } from '@/lib/utils';
+import { TrendingUp, Package, DollarSign, Search, X, Wallet, ChevronDown, ChevronUp, ChevronsUpDown } from 'lucide-react';
+
+interface CategoryConfig {
+  id: Category;
+  label: string;
+  icon: string;
+}
+
+const CATEGORY_CONFIGS: CategoryConfig[] = [
+  { id: 'Telefon', label: 'Telefon', icon: '📱' },
+  { id: 'Tablet', label: 'Tablet', icon: '📟' },
+  { id: 'Laptop', label: 'Bilgisayar', icon: '💻' },
+  { id: 'Diğer', label: 'Diğer Ürünler', icon: '📦' },
+];
 
 export default function HomeTab() {
   const { products, summary } = useApp();
-  const [showForm, setShowForm] = useState(false);
-  const [formType, setFormType] = useState<'purchase' | 'sale'>('purchase');
   const [search, setSearch] = useState('');
 
-  const recentProducts = products
-    .filter((p) =>
-      search
-        ? `${p.brand} ${p.model}`.toLowerCase().includes(search.toLowerCase())
-        : true
-    )
-    .slice(0, 10);
+  // Açık olan kategorilerin state'i (varsayılan olarak ürün olanlar açık, hiç ürün yoksa Telefon açık)
+  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({
+    Telefon: true,
+    Tablet: true,
+    Laptop: true,
+    Diğer: true,
+  });
+
+  // Kategori bazlı filtreleme ve satılan ürünlerin gösterimi
+  const [statusFilter, setStatusFilter] = useState<'all' | 'inStock' | 'sold'>('all');
+
+  const toggleCategory = (catId: string) => {
+    setOpenCategories((prev) => ({
+      ...prev,
+      [catId]: !prev[catId],
+    }));
+  };
+
+  const toggleAllCategories = () => {
+    const areAllOpen = CATEGORY_CONFIGS.every((c) => openCategories[c.id]);
+    const nextState = !areAllOpen;
+    const updated: Record<string, boolean> = {};
+    CATEGORY_CONFIGS.forEach((c) => {
+      updated[c.id] = nextState;
+    });
+    setOpenCategories(updated);
+  };
+
+  // Kategorilere göre filtrelenmiş ürünler
+  const categorizedProducts = useMemo(() => {
+    const result: Record<Category, Product[]> = {
+      Telefon: [],
+      Tablet: [],
+      Laptop: [],
+      Diğer: [],
+    };
+
+    const query = search.trim().toLowerCase();
+
+    products.forEach((p) => {
+      const matchSearch = query
+        ? `${p.brand} ${p.model} ${p.notes ?? ''}`.toLowerCase().includes(query)
+        : true;
+
+      const matchStatus =
+        statusFilter === 'all'
+          ? true
+          : statusFilter === 'sold'
+          ? p.status === 'Satıldı'
+          : p.status === 'Stokta';
+
+      if (matchSearch && matchStatus) {
+        if (result[p.category]) {
+          result[p.category].push(p);
+        } else {
+          result['Diğer'].push(p);
+        }
+      }
+    });
+
+    return result;
+  }, [products, search, statusFilter]);
+
+  const allOpen = CATEGORY_CONFIGS.every((c) => openCategories[c.id]);
 
   return (
-    <div className="px-4 pt-4 pb-28 space-y-4">
-      {showForm && <ProductForm onClose={() => setShowForm(false)} defaultType={formType} />}
-
+    <div className="px-4 pt-4 pb-32 space-y-4">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
-          style={{ background: 'linear-gradient(135deg, hsl(var(--primary-hsl)), hsl(var(--primary-hsl) / 0.6))' }}>
+        <div
+          className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-md"
+          style={{ background: 'linear-gradient(135deg, hsl(var(--primary-hsl)), hsl(var(--primary-hsl) / 0.6))' }}
+        >
           <Wallet size={20} className="text-white" />
         </div>
         <div>
@@ -60,30 +128,12 @@ export default function HomeTab() {
         />
       </div>
 
-      {/* Quick actions */}
-      <div className="flex gap-3">
-        <button
-          onClick={() => { setFormType('purchase'); setShowForm(true); }}
-          className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-primary/20 border border-primary/30 text-primary font-semibold text-sm hover:bg-primary/30 transition"
-        >
-          <Plus size={18} />
-          Alış Ekle
-        </button>
-        <button
-          onClick={() => { setFormType('sale'); setShowForm(true); }}
-          className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-green-500/20 border border-green-500/30 text-green-400 font-semibold text-sm hover:bg-green-500/30 transition"
-        >
-          <Plus size={18} />
-          Satış Ekle
-        </button>
-      </div>
-
       {/* Search */}
       <div className="relative">
         <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
         <input
           type="text"
-          placeholder="Ürün ara..."
+          placeholder="Marka, model veya not ara..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full rounded-xl bg-white/5 border border-white/10 pl-9 pr-8 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-white/30"
@@ -95,20 +145,118 @@ export default function HomeTab() {
         )}
       </div>
 
-      {/* Recent list */}
-      <div>
-        <h2 className="text-sm font-semibold text-white/60 mb-2">
-          {search ? `Arama Sonuçları (${recentProducts.length})` : 'Son Ürünler'}
-        </h2>
-        {recentProducts.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <div className="space-y-2">
-            {recentProducts.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
-        )}
+      {/* Filter Options & Toggle All */}
+      <div className="flex items-center justify-between gap-2 pt-1">
+        <div className="flex gap-1.5 p-1 bg-white/5 rounded-xl border border-white/10 text-xs">
+          <button
+            onClick={() => setStatusFilter('all')}
+            className={`px-2.5 py-1 rounded-lg transition-all font-medium ${
+              statusFilter === 'all'
+                ? 'bg-primary text-white shadow-sm'
+                : 'text-white/50 hover:text-white/80'
+            }`}
+          >
+            Tümü
+          </button>
+          <button
+            onClick={() => setStatusFilter('inStock')}
+            className={`px-2.5 py-1 rounded-lg transition-all font-medium ${
+              statusFilter === 'inStock'
+                ? 'bg-blue-500 text-white shadow-sm'
+                : 'text-white/50 hover:text-white/80'
+            }`}
+          >
+            Stokta
+          </button>
+          <button
+            onClick={() => setStatusFilter('sold')}
+            className={`px-2.5 py-1 rounded-lg transition-all font-medium ${
+              statusFilter === 'sold'
+                ? 'bg-green-500 text-white shadow-sm'
+                : 'text-white/50 hover:text-white/80'
+            }`}
+          >
+            Satılanlar
+          </button>
+        </div>
+
+        <button
+          onClick={toggleAllCategories}
+          className="flex items-center gap-1 text-[11px] px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 border border-white/10 transition"
+        >
+          <ChevronsUpDown size={12} />
+          {allOpen ? 'Tümünü Kapat' : 'Tümünü Aç'}
+        </button>
+      </div>
+
+      {/* Accordion Categories */}
+      <div className="space-y-3">
+        {CATEGORY_CONFIGS.map((cat) => {
+          const catProducts = categorizedProducts[cat.id] || [];
+          const isOpen = Boolean(openCategories[cat.id]);
+
+          // İlgili kategorideki toplam stok ve satılan sayısı
+          const inStockCount = catProducts.filter((p) => p.status === 'Stokta').length;
+          const soldCount = catProducts.filter((p) => p.status === 'Satıldı').length;
+
+          return (
+            <div
+              key={cat.id}
+              className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden transition-all shadow-sm"
+            >
+              {/* Açılır / Kapanır Kategori Başlığı */}
+              <button
+                type="button"
+                onClick={() => toggleCategory(cat.id)}
+                className="w-full text-left px-4 py-3 flex items-center justify-between hover:bg-white/5 transition"
+              >
+                <div className="flex items-center gap-2.5">
+                  <span className="text-xl shrink-0">{cat.icon}</span>
+                  <div>
+                    <h2 className="font-semibold text-sm leading-tight">{cat.label}</h2>
+                    <p className="text-[11px] text-white/50 mt-0.5">
+                      {catProducts.length === 0 ? (
+                        'Ürün yok'
+                      ) : (
+                        <>
+                          <span className="text-blue-400 font-medium">{inStockCount} Stokta</span>
+                          {' · '}
+                          <span className="text-green-400 font-medium">{soldCount} Satıldı</span>
+                        </>
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white/70 font-medium">
+                    {catProducts.length}
+                  </span>
+                  {isOpen ? (
+                    <ChevronUp size={16} className="text-white/40" />
+                  ) : (
+                    <ChevronDown size={16} className="text-white/40" />
+                  )}
+                </div>
+              </button>
+
+              {/* Açılır Kategori İçeriği */}
+              {isOpen && (
+                <div className="px-3 pb-3 pt-1 border-t border-white/10 space-y-2">
+                  {catProducts.length === 0 ? (
+                    <div className="py-4 text-center text-white/40 text-xs">
+                      Bu kategoride kayıtlı ürün bulunamadı.
+                    </div>
+                  ) : (
+                    catProducts.map((product) => (
+                      <ProductCard key={product.id} product={product} />
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -137,16 +285,6 @@ function StatCard({
       <div className={`inline-flex p-1.5 rounded-lg ${colorMap[color]} mb-2`}>{icon}</div>
       <p className={`font-bold ${small ? 'text-sm' : 'text-lg'} leading-tight`}>{value}</p>
       <p className="text-white/40 text-[10px] mt-0.5">{label}</p>
-    </div>
-  );
-}
-
-function EmptyState() {
-  return (
-    <div className="text-center py-12 text-white/30">
-      <div className="text-4xl mb-3">📦</div>
-      <p className="text-sm">Henüz ürün eklenmedi</p>
-      <p className="text-xs mt-1">Alış veya satış eklemek için yukarıdaki butonları kullan</p>
     </div>
   );
 }

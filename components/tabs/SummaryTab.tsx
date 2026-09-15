@@ -23,7 +23,7 @@ export default function SummaryTab() {
   const isProfit = summary.netProfit >= 0;
 
   return (
-    <div className="px-4 pt-4 pb-28 space-y-4">
+    <div className="px-4 pt-4 pb-32 space-y-4">
       <div>
         <h1 className="text-xl font-bold">📈 Özet</h1>
         <p className="text-white/50 text-xs mt-0.5">Genel performans görünümü</p>

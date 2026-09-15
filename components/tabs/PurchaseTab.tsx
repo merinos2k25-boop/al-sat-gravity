@@ -6,7 +6,7 @@ import ProductCard from '@/components/ui/ProductCard';
 import ProductForm from '@/components/ui/ProductForm';
 import { Category } from '@/lib/types';
 import { CATEGORIES, getCategoryIcon } from '@/lib/utils';
-import { Plus, Search, X, SlidersHorizontal, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Search, X, SlidersHorizontal } from 'lucide-react';
 
 type SortOption = 'date-desc' | 'date-asc' | 'price-desc' | 'price-asc';
 
@@ -36,7 +36,7 @@ export default function PurchaseTab() {
   }, [products, search, filterCategory, sort]);
 
   return (
-    <div className="px-4 pt-4 pb-28 space-y-4">
+    <div className="px-4 pt-4 pb-32 space-y-4 relative min-h-screen">
       {showForm && <ProductForm onClose={() => setShowForm(false)} defaultType="purchase" />}
 
       {/* Header */}
@@ -45,12 +45,6 @@ export default function PurchaseTab() {
           <h1 className="text-xl font-bold">🛒 Alışlar</h1>
           <p className="text-white/50 text-xs mt-0.5">{purchases.length} kayıt</p>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary/20 border border-primary/30 text-primary text-sm font-semibold hover:bg-primary/30 transition"
-        >
-          <Plus size={16} /> Ekle
-        </button>
       </div>
 
       {/* Search */}
@@ -117,9 +111,10 @@ export default function PurchaseTab() {
 
       {/* List */}
       {purchases.length === 0 ? (
-        <div className="text-center py-12 text-white/30">
+        <div className="text-center py-16 text-white/30">
           <div className="text-4xl mb-3">🛒</div>
           <p className="text-sm">Alış kaydı bulunamadı</p>
+          <p className="text-xs mt-1">Alış eklemek için sağ alttaki yuvarlak butona dokunun</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -128,6 +123,15 @@ export default function PurchaseTab() {
           ))}
         </div>
       )}
+
+      {/* Yuvarlak Alış Ekle Butonu (Alt Barın Üst Kısmında Konumlandırılmış FAB) */}
+      <button
+        onClick={() => setShowForm(true)}
+        className="fixed bottom-24 right-5 z-40 w-14 h-14 rounded-full bg-primary text-white shadow-[0_8px_25px_rgba(0,0,0,0.35)] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+        aria-label="Alış Ekle"
+      >
+        <Plus size={28} strokeWidth={2.5} />
+      </button>
     </div>
   );
 }

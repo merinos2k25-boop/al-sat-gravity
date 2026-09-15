@@ -39,7 +39,7 @@ export default function SalesTab() {
   }, [products, search, filterCategory, sort]);
 
   return (
-    <div className="px-4 pt-4 pb-28 space-y-4">
+    <div className="px-4 pt-4 pb-32 space-y-4 relative min-h-screen">
       {showForm && <ProductForm onClose={() => setShowForm(false)} defaultType="sale" />}
 
       {/* Header */}
@@ -48,12 +48,6 @@ export default function SalesTab() {
           <h1 className="text-xl font-bold">💰 Satışlar</h1>
           <p className="text-white/50 text-xs mt-0.5">{sales.length} satış yapıldı</p>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-green-500/20 border border-green-500/30 text-green-400 text-sm font-semibold hover:bg-green-500/30 transition"
-        >
-          <Plus size={16} /> Ekle
-        </button>
       </div>
 
       {/* Search */}
@@ -120,10 +114,10 @@ export default function SalesTab() {
 
       {/* List */}
       {sales.length === 0 ? (
-        <div className="text-center py-12 text-white/30">
+        <div className="text-center py-16 text-white/30">
           <div className="text-4xl mb-3">💰</div>
           <p className="text-sm">Henüz satış kaydı yok</p>
-          <p className="text-xs mt-1">Satış eklemek için yukarıdaki butona tıkla</p>
+          <p className="text-xs mt-1">Satış eklemek için sağ alttaki yuvarlak butona dokunun</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -132,6 +126,15 @@ export default function SalesTab() {
           ))}
         </div>
       )}
+
+      {/* Yuvarlak Satış Ekle Butonu (Alt Barın Üst Kısmında Konumlandırılmış FAB) */}
+      <button
+        onClick={() => setShowForm(true)}
+        className="fixed bottom-24 right-5 z-40 w-14 h-14 rounded-full bg-green-500 text-white shadow-[0_8px_25px_rgba(34,197,94,0.4)] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+        aria-label="Satış Ekle"
+      >
+        <Plus size={28} strokeWidth={2.5} />
+      </button>
     </div>
   );
 }
