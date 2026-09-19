@@ -141,30 +141,95 @@ export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
   };
 
   // ─── Nav bar arka planı ──────────────────────────────────────────────────────
-  // Minimal SaaS vs Retro Glass desteği
-  const navStyle: React.CSSProperties = isMinimalSaas
-    ? isLight
+  // Tüm UI Modelleri için özel dock stilleri
+  const getNavStyle = (): React.CSSProperties => {
+    const ui = settings.uiStyle || 'retro-glass';
+
+    if (ui === 'cyberpunk') {
+      return isLight
+        ? {
+            backgroundColor: '#ffffff',
+            borderColor: 'rgba(0, 127, 157, 0.45)',
+            boxShadow: '0 4px 20px rgba(0, 127, 157, 0.15)',
+          }
+        : {
+            backgroundColor: '#07131c',
+            borderColor: 'rgba(0, 221, 255, 0.45)',
+            boxShadow: '0 0 25px rgba(0, 221, 255, 0.2), inset 0 0 10px rgba(0, 221, 255, 0.05)',
+          };
+    }
+
+    if (ui === 'paper-editorial') {
+      return isLight
+        ? {
+            backgroundColor: '#f8f1e5',
+            borderColor: 'rgba(184, 170, 152, 0.9)',
+            boxShadow: '0 4px 20px rgba(99, 88, 80, 0.12)',
+          }
+        : {
+            backgroundColor: '#211814',
+            borderColor: 'rgba(106, 90, 76, 0.8)',
+            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.55)',
+          };
+    }
+
+    if (ui === 'industrial-utility') {
+      return isLight
+        ? {
+            backgroundColor: '#ffffff',
+            borderColor: 'rgba(184, 178, 169, 0.95)',
+            boxShadow: '0 4px 16px rgba(24, 21, 18, 0.1)',
+          }
+        : {
+            backgroundColor: '#1a1a1a',
+            borderColor: 'rgba(89, 81, 73, 0.95)',
+            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.6)',
+          };
+    }
+
+    if (ui === 'technical-blueprint') {
+      return isLight
+        ? {
+            backgroundColor: '#fffef8',
+            borderColor: 'rgba(82, 135, 172, 0.85)',
+            boxShadow: '0 4px 20px rgba(13, 63, 104, 0.12)',
+          }
+        : {
+            backgroundColor: '#04273e',
+            borderColor: 'rgba(107, 218, 242, 0.45)',
+            boxShadow: '0 0 25px rgba(107, 218, 242, 0.18)',
+          };
+    }
+
+    if (ui === 'minimal-saas') {
+      return isLight
+        ? {
+            backgroundColor: '#ffffff',
+            borderColor: 'rgba(220, 225, 236, 0.95)',
+            boxShadow: '0 4px 20px rgba(40, 47, 83, 0.08)',
+          }
+        : {
+            backgroundColor: '#0d1b2a',
+            borderColor: 'rgba(43, 58, 80, 0.95)',
+            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.5)',
+          };
+    }
+
+    // Retro Glass (Varsayılan)
+    return isLight
       ? {
-          backgroundColor: '#ffffff',
-          borderColor: 'rgba(220, 225, 236, 0.95)',
-          boxShadow: '0 4px 20px rgba(40, 47, 83, 0.08)',
+          backgroundColor: 'rgba(255, 255, 255, 0.90)',
+          borderColor: 'rgba(0, 0, 0, 0.10)',
+          boxShadow: '0 15px 35px rgba(0,0,0,0.12)',
         }
       : {
-          backgroundColor: '#0d1b2a',
-          borderColor: 'rgba(43, 58, 80, 0.95)',
-          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.5)',
-        }
-    : isLight
-    ? {
-        backgroundColor: 'rgba(255, 255, 255, 0.90)',
-        borderColor: 'rgba(0, 0, 0, 0.10)',
-        boxShadow: '0 15px 35px rgba(0,0,0,0.12)',
-      }
-    : {
-        backgroundColor: 'rgba(12, 14, 20, 0.90)',
-        borderColor: 'rgba(255, 255, 255, 0.18)',
-        boxShadow: '0 20px 45px -10px rgba(0,0,0,0.7), inset 0 1px 1px 0 rgba(255,255,255,0.28)',
-      };
+          backgroundColor: 'rgba(12, 14, 20, 0.90)',
+          borderColor: 'rgba(255, 255, 255, 0.18)',
+          boxShadow: '0 20px 45px -10px rgba(0,0,0,0.7), inset 0 1px 1px 0 rgba(255,255,255,0.28)',
+        };
+  };
+
+  const navStyle = getNavStyle();
 
   // Pasif ikon rengi
   const inactiveIconColor = isLight ? '#94a3b8' : 'rgba(255,255,255,0.45)';

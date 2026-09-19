@@ -24,7 +24,13 @@ export type ColorTheme =
   | 'crimson'
   | 'white';
 export type AppTheme = 'dark' | 'light';
-export type UiStyle = 'minimal-saas' | 'retro-glass';
+export type UiStyle =
+  | 'minimal-saas'
+  | 'retro-glass'
+  | 'cyberpunk'
+  | 'paper-editorial'
+  | 'industrial-utility'
+  | 'technical-blueprint';
 
 export interface Product {
   id: string;

@@ -52,7 +52,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     const uiStyle = settings.uiStyle || 'retro-glass';
     root.setAttribute('data-ui', uiStyle);
-    root.classList.remove('ui-minimal-saas', 'ui-retro-glass');
+    Array.from(root.classList).forEach((c) => {
+      if (c.startsWith('ui-')) root.classList.remove(c);
+    });
     root.classList.add(`ui-${uiStyle}`);
 
     const colorMap: Record<string, string> = {

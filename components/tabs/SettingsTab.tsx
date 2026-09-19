@@ -5,7 +5,7 @@ import { useApp } from '@/components/providers/AppProvider';
 import { AppTheme, ColorTheme, UiStyle } from '@/lib/types';
 import {
   Moon, Sun, Palette, Download, Upload, Info, ChevronDown, ChevronUp,
-  Trash2, Check, FileSpreadsheet, Sparkles, Layers
+  Trash2, Check, FileSpreadsheet, Sparkles, Layers, Zap, BookOpen, Wrench, Compass
 } from 'lucide-react';
 
 interface SectionProps {
@@ -122,19 +122,43 @@ export default function SettingsTab() {
 
       {/* UI Style System */}
       <Section icon={<Layers size={16} />} title="Tasarım Modeli (UI Style)" defaultOpen storageKey="ui_style">
-        <div className="flex gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
           {([
             {
               id: 'minimal-saas' as UiStyle,
               label: 'Minimal SaaS',
               icon: Layers,
-              desc: 'Temiz & Düz Kurumsal Çizgiler',
+              desc: 'Temiz & Düz Kurumsal',
             },
             {
               id: 'retro-glass' as UiStyle,
               label: 'Retro Glass',
               icon: Sparkles,
-              desc: 'Buzlu Cam & Parlak Yansımalar',
+              desc: 'Buzlu Cam & Yansımalar',
+            },
+            {
+              id: 'cyberpunk' as UiStyle,
+              label: 'Cyberpunk',
+              icon: Zap,
+              desc: 'Neon Siberpunk & Dijital',
+            },
+            {
+              id: 'paper-editorial' as UiStyle,
+              label: 'Paper Editorial',
+              icon: BookOpen,
+              desc: 'Vintage Gazete & Sıcak Kağıt',
+            },
+            {
+              id: 'industrial-utility' as UiStyle,
+              label: 'Industrial Utility',
+              icon: Wrench,
+              desc: 'Endüstriyel Panel & Çelik',
+            },
+            {
+              id: 'technical-blueprint' as UiStyle,
+              label: 'Technical Blueprint',
+              icon: Compass,
+              desc: 'Mühendislik & Mavi Çizim',
             },
           ]).map(({ id, label, icon: Icon, desc }) => {
             const active = (settings.uiStyle || 'retro-glass') === id;
@@ -142,16 +166,16 @@ export default function SettingsTab() {
               <button
                 key={id}
                 onClick={() => updateSettings({ uiStyle: id })}
-                className={`flex-1 flex flex-col items-center gap-1.5 py-3 px-3 rounded-xl border transition-all ${
+                className={`flex flex-col items-center text-center gap-1.5 py-3 px-2 rounded-xl border transition-all ${
                   active
                     ? 'border-primary bg-primary/15 font-semibold shadow-sm'
                     : 'border-white/10 bg-white/5 text-white/60 hover:text-white/90'
                 }`}
                 style={active ? { color: 'hsl(var(--primary-hsl))' } : undefined}
               >
-                <Icon size={22} />
-                <span className="text-xs">{label}</span>
-                <span className="text-[10px] opacity-60 text-center">{desc}</span>
+                <Icon size={20} />
+                <span className="text-xs font-semibold">{label}</span>
+                <span className="text-[10px] opacity-60 leading-tight">{desc}</span>
               </button>
             );
           })}
