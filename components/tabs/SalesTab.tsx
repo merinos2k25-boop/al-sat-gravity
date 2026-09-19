@@ -6,7 +6,7 @@ import ProductCard from '@/components/ui/ProductCard';
 import ProductForm from '@/components/ui/ProductForm';
 import { Category } from '@/lib/types';
 import { CATEGORIES, getCategoryIcon, formatCurrency } from '@/lib/utils';
-import { Search, X, SlidersHorizontal, TrendingUp, DollarSign } from 'lucide-react';
+import { Search, X, SlidersHorizontal, TrendingUp, DollarSign, Filter } from 'lucide-react';
 import DraggableFab from '@/components/ui/DraggableFab';
 
 type SortOption = 'date-desc' | 'date-asc' | 'profit-desc' | 'profit-asc';
@@ -134,30 +134,76 @@ export default function SalesTab() {
         </div>
       </div>
 
-      {/* Sınıfına (Kategorisine) Göre Filtrele */}
-      <div>
-        <p className="text-[11px] font-semibold text-white/50 uppercase tracking-wider mb-2">
-          Kategoriye Göre Filtrele
-        </p>
-        <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar text-xs">
-          {(['Tümü', ...CATEGORIES] as const).map((cat) => {
+      {/* Sınıfına (Kategorisine) Göre Filtrele — Kaydırma gerektirmeyen sabit tasarım */}
+      <div
+        className="bg-white/5 p-2 rounded-2xl border border-white/10 space-y-1.5"
+        onTouchStart={(e) => e.stopPropagation()}
+        onTouchMove={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-1 text-[11px] font-semibold text-white/50">
+          <span className="flex items-center gap-1">
+            <Filter size={12} className="text-green-400" />
+            <span>Kategori Filtresi</span>
+          </span>
+          {filterCategory !== 'Tümü' && (
+            <button
+              onClick={() => setFilterCategory('Tümü')}
+              className="text-green-400 hover:underline text-[10px]"
+            >
+              Filtreyi Temizle
+            </button>
+          )}
+        </div>
+
+        <div className="grid grid-cols-3 gap-1.5">
+          {(['Tümü', 'Telefon', 'Tablet'] as const).map((cat) => {
             const count = categoryCounts[cat] || 0;
             const active = filterCategory === cat;
             return (
               <button
                 key={cat}
+                type="button"
                 onClick={() => setFilterCategory(cat)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap shrink-0 transition-all flex items-center gap-1.5 border ${
+                className={`py-2 px-1.5 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1 border truncate ${
                   active
                     ? 'bg-green-500 !text-white border-green-500 shadow-sm'
-                    : 'bg-white/5 text-white/60 hover:text-white/90 border-white/10'
+                    : 'bg-white/5 text-white/70 hover:text-white border-white/10'
                 }`}
                 style={active ? { color: 'white' } : undefined}
               >
-                <span>{cat === 'Tümü' ? '🔍 Tümü' : `${getCategoryIcon(cat)} ${cat === 'Laptop' ? 'Bilgisayar' : cat}`}</span>
+                <span className="truncate">{cat === 'Tümü' ? '🔍 Tümü' : `${getCategoryIcon(cat)} ${cat}`}</span>
                 <span
-                  className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
-                    active ? 'bg-white/25 text-white' : 'bg-white/10 text-white/60'
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold shrink-0 ${
+                    active ? 'bg-white/25 text-white' : 'bg-white/10 text-white/50'
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="grid grid-cols-2 gap-1.5">
+          {(['Laptop', 'Diğer'] as const).map((cat) => {
+            const count = categoryCounts[cat] || 0;
+            const active = filterCategory === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setFilterCategory(cat)}
+                className={`py-2 px-1.5 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1 border truncate ${
+                  active
+                    ? 'bg-green-500 !text-white border-green-500 shadow-sm'
+                    : 'bg-white/5 text-white/70 hover:text-white border-white/10'
+                }`}
+                style={active ? { color: 'white' } : undefined}
+              >
+                <span className="truncate">{getCategoryIcon(cat)} {cat === 'Laptop' ? 'Bilgisayar' : cat}</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold shrink-0 ${
+                    active ? 'bg-white/25 text-white' : 'bg-white/10 text-white/50'
                   }`}
                 >
                   {count}
