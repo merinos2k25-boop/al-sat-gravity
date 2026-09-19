@@ -28,6 +28,61 @@
   --text-foreground: #090d16;
 }
 
+/* ===== UI MODEL 1: MINIMAL SAAS ===== */
+[data-ui="minimal-saas"].dark {
+  --bg-background: #07111f;
+  --bg-surface: #0d1b2a;
+  --text-foreground: #f1f5f9;
+}
+[data-ui="minimal-saas"].light {
+  --bg-background: #f8f9fc;
+  --bg-surface: #ffffff;
+  --text-foreground: #131a35;
+}
+
+/* Minimal SaaS Cards & Panels: Temiz, Düz & Keskin Kenarlıklar */
+[data-ui="minimal-saas"].dark .bg-white\/5 {
+  background-color: #0e1e33 !important;
+  border-color: rgba(43, 58, 80, 0.9) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
+}
+[data-ui="minimal-saas"].light .bg-white\/5 {
+  background-color: #ffffff !important;
+  border-color: rgba(220, 225, 236, 0.9) !important;
+  box-shadow: 0 1px 4px rgba(40, 47, 83, 0.06) !important;
+}
+[data-ui="minimal-saas"] .rounded-2xl {
+  border-radius: 0.875rem !important;
+}
+
+/* ===== UI MODEL 2: RETRO GLASS ===== */
+[data-ui="retro-glass"].dark {
+  --bg-background: #061017;
+  --bg-surface: #101c27;
+  --text-foreground: #f1f5f9;
+}
+[data-ui="retro-glass"].light {
+  --bg-background: #dce3eb;
+  --bg-surface: #f6f9fc;
+  --text-foreground: #1c2731;
+}
+
+/* Retro Glass Cards & Panels: Buzlu Cam & Işıltılı Yansıma */
+[data-ui="retro-glass"].dark .bg-white\/5 {
+  background-color: rgba(16, 28, 39, 0.6) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 10px 25px -5px rgba(0, 0, 0, 0.45) !important;
+}
+[data-ui="retro-glass"].light .bg-white\/5 {
+  background-color: rgba(246, 249, 252, 0.75) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-color: rgba(255, 255, 255, 0.75) !important;
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.95), 0 8px 24px rgba(28, 39, 49, 0.08) !important;
+}
+
 /* ===== Universal Font Enforcement ===== */
 html, body, button, input, select, textarea, p, h1, h2, h3, h4, span, a, label {
   font-family: var(--font-family) !important;

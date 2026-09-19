@@ -24,6 +24,7 @@ export type ColorTheme =
   | 'crimson'
   | 'white';
 export type AppTheme = 'dark' | 'light';
+export type UiStyle = 'minimal-saas' | 'retro-glass';
 
 export interface Product {
   id: string;
@@ -44,6 +45,7 @@ export interface Product {
 export interface AppSettings {
   theme: AppTheme;
   colorTheme: ColorTheme;
+  uiStyle?: UiStyle;
   fontFamily?: string;
 }
 

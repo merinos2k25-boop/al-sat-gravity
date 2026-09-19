@@ -84,9 +84,27 @@ export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
     }
   };
 
+  const isMinimalSaas = settings.uiStyle === 'minimal-saas';
+
   // ─── Kapsül stili ────────────────────────────────────────────────────────────
   // Tamamen JS tabanlı — dark: Tailwind prefixi kullanmıyoruz (OS tercihine bakmasın)
   const getCapsuleStyle = (): React.CSSProperties => {
+    if (isMinimalSaas) {
+      if (isWhiteTheme) {
+        return {
+          backgroundColor: isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.2)',
+          borderColor: isLight ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.4)',
+          boxShadow: 'none',
+        };
+      }
+      return {
+        backgroundColor: isLight ? 'hsl(var(--primary-hsl) / 0.12)' : 'hsl(var(--primary-hsl) / 0.20)',
+        borderColor: isLight ? 'hsl(var(--primary-hsl) / 0.35)' : 'hsl(var(--primary-hsl) / 0.45)',
+        boxShadow: 'none',
+      };
+    }
+
+    // Retro Glass Stili (Varsayılan): Cam ışıltısı & parlak yansıma
     if (isWhiteTheme) {
       return isLight
         ? {
@@ -123,8 +141,20 @@ export default function BottomNav({ activeTab, onChange }: BottomNavProps) {
   };
 
   // ─── Nav bar arka planı ──────────────────────────────────────────────────────
-  // dark: prefixi YOK — JS ile app temasına göre belirleniyor
-  const navStyle: React.CSSProperties = isLight
+  // Minimal SaaS vs Retro Glass desteği
+  const navStyle: React.CSSProperties = isMinimalSaas
+    ? isLight
+      ? {
+          backgroundColor: '#ffffff',
+          borderColor: 'rgba(220, 225, 236, 0.95)',
+          boxShadow: '0 4px 20px rgba(40, 47, 83, 0.08)',
+        }
+      : {
+          backgroundColor: '#0d1b2a',
+          borderColor: 'rgba(43, 58, 80, 0.95)',
+          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.5)',
+        }
+    : isLight
     ? {
         backgroundColor: 'rgba(255, 255, 255, 0.90)',
         borderColor: 'rgba(0, 0, 0, 0.10)',

@@ -2,10 +2,10 @@
 
 import React, { useRef, useState } from 'react';
 import { useApp } from '@/components/providers/AppProvider';
-import { AppTheme, ColorTheme } from '@/lib/types';
+import { AppTheme, ColorTheme, UiStyle } from '@/lib/types';
 import {
   Moon, Sun, Palette, Download, Upload, Info, ChevronDown, ChevronUp,
-  Trash2, Check, FileSpreadsheet
+  Trash2, Check, FileSpreadsheet, Sparkles, Layers
 } from 'lucide-react';
 
 interface SectionProps {
@@ -117,6 +117,44 @@ export default function SettingsTab() {
               <span className="text-[10px] opacity-60 text-center">{desc}</span>
             </button>
           ))}
+        </div>
+      </Section>
+
+      {/* UI Style System */}
+      <Section icon={<Layers size={16} />} title="Tasarım Modeli (UI Style)" defaultOpen storageKey="ui_style">
+        <div className="flex gap-3">
+          {([
+            {
+              id: 'minimal-saas' as UiStyle,
+              label: 'Minimal SaaS',
+              icon: Layers,
+              desc: 'Temiz & Düz Kurumsal Çizgiler',
+            },
+            {
+              id: 'retro-glass' as UiStyle,
+              label: 'Retro Glass',
+              icon: Sparkles,
+              desc: 'Buzlu Cam & Parlak Yansımalar',
+            },
+          ]).map(({ id, label, icon: Icon, desc }) => {
+            const active = (settings.uiStyle || 'retro-glass') === id;
+            return (
+              <button
+                key={id}
+                onClick={() => updateSettings({ uiStyle: id })}
+                className={`flex-1 flex flex-col items-center gap-1.5 py-3 px-3 rounded-xl border transition-all ${
+                  active
+                    ? 'border-primary bg-primary/15 font-semibold shadow-sm'
+                    : 'border-white/10 bg-white/5 text-white/60 hover:text-white/90'
+                }`}
+                style={active ? { color: 'hsl(var(--primary-hsl))' } : undefined}
+              >
+                <Icon size={22} />
+                <span className="text-xs">{label}</span>
+                <span className="text-[10px] opacity-60 text-center">{desc}</span>
+              </button>
+            );
+          })}
         </div>
       </Section>
 

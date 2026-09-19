@@ -8,6 +8,7 @@ const APP_VERSION = '1.0.0';
 export const defaultSettings: AppSettings = {
   theme: 'dark',
   colorTheme: 'blue',
+  uiStyle: 'retro-glass',
 };
 
 // --- Products ---

@@ -50,6 +50,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     root.classList.add(isLight ? 'light' : 'dark');
     root.classList.toggle('color-theme-white', settings.colorTheme === 'white');
 
+    const uiStyle = settings.uiStyle || 'retro-glass';
+    root.setAttribute('data-ui', uiStyle);
+    root.classList.remove('ui-minimal-saas', 'ui-retro-glass');
+    root.classList.add(`ui-${uiStyle}`);
+
     const colorMap: Record<string, string> = {
       blue: '221 83% 53%',
       green: '142 71% 45%',
